@@ -4,22 +4,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity // Add this!
 public class SecurityConfig {
 
-    @Bean
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1.0/register", "/test").permitAll()
+                // 1. Public endpoints
+                .requestMatchers("/api/v1.0/register", "/api/v1.0/login").permitAll()
+                
+                // 2. Patent endpoints - allow BOTH User and Innovator
+                .requestMatchers("/api/v1.0/patents/**").hasAnyRole("USER", "INNOVATOR") 
+                
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults()); // Required for Postman testing
+            .httpBasic(Customizer.withDefaults()); // This enables the Basic Auth you use in Postman
 
         return http.build();
     }
