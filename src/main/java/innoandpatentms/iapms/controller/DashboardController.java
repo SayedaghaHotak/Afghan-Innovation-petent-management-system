@@ -1,29 +1,80 @@
+
 package innoandpatentms.iapms.controller;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import innoandpatentms.iapms.entity.User;
+import innoandpatentms.iapms.repository.PatentRepository;
+import innoandpatentms.iapms.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1.0")
+@RequiredArgsConstructor
 public class DashboardController {
 
-    // USER DASHBOARD
-    @GetMapping("/user/dashboard")
-    public ResponseEntity<?> getUserDashboard() {
-        return ResponseEntity.ok("Welcome to the User Dashboard! Here you can submit and track your patents.");
+    private final UserRepository userRepository;
+    private final PatentRepository patentRepository;
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> getSmartDashboard(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 1. Fixed the nested ternary error by using a clean priority check
+        String primaryRole = "USER";
+        if (user.getRoles().contains("ADMIN")) {
+            primaryRole = "ADMIN";
+        } else if (user.getRoles().contains("REVIEWER")) {
+            primaryRole = "REVIEWER";
+        } else if (user.getRoles().contains("INNOVATOR")) {
+            primaryRole = "INNOVATOR";
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("role", primaryRole);
+        response.put("firstName", user.getFirstName());
+
+        // 2. The Switch logic
+        switch (primaryRole) {
+            case "ADMIN" -> {
+                response.put("allUsers", userRepository.findAll());
+                response.put("allPatents", patentRepository.findAll());
+            }
+            case "REVIEWER" -> // Ensure findByAssignedCommitteeIn exists in PatentRepository
+                response.put("assignedPatents", patentRepository.findByAssignedCommitteeIn(user.getCommittees()));
+            case "INNOVATOR" -> {
+                // Ensure findByUser exists in PatentRepository
+                response.put("myPatents", patentRepository.findByUser(user));
+                response.put("publicGallery", getPublicGalleryData());
+            }
+            default -> response.put("publicGallery", getPublicGalleryData());
+        }
+        return ResponseEntity.ok(response);
     }
 
-    // EXAMINER DASHBOARD
-    @GetMapping("/examiner/dashboard")
-    public ResponseEntity<?> getExaminerDashboard() {
-        return ResponseEntity.ok("Welcome to the Examiner Dashboard! Here you can review and manage patent applications assigned to you.");
-    }
-
-    // ADMIN DASHBOARD
-    @GetMapping("/admin/dashboard")
-    public ResponseEntity<?> getAdminDashboard() {
-        return ResponseEntity.ok("Welcome to the Admin Dashboard! You have full control over users and system analytics.");
+    private List<Map<String, String>> getPublicGalleryData() {
+        // 3. Fixed the Map.of potential null/type errors
+        return patentRepository.findByStatus("APPROVED").stream()
+                .map(p -> {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("id", String.valueOf(p.getId()));
+                    data.put("title", p.getTitle() != null ? p.getTitle() : "Untitled");
+                    data.put("owner", p.getUser() != null ? 
+                             p.getUser().getFirstName() + " " + p.getUser().getLastName() : "Unknown");
+                    return data;
+                }).collect(Collectors.toList());
     }
 }
