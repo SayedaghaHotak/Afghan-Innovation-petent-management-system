@@ -13,3 +13,33 @@ body {
 #root {
   min-height: 100vh;
 }
+/* part of theme  */
+:root {
+  /* Light Mode */
+  --bg-main: #f4f7f6;
+  --bg-sidebar: #23212c;
+  --bg-navbar: #ffffff;
+  --text-main: #353333;
+  --text-sidebar: #ffffff;
+  --border-color: #e0e0e0;
+  --accent-color: #ffc107; /* طلایی AIMS */
+}
+
+[data-theme='dark'] {
+  /* Dark Mode */
+  --bg-main: #121212;
+  --bg-sidebar: #1a1a1a;
+  --bg-navbar: #1e1e1e;
+  --text-main: #e0e0e0;
+  --text-sidebar: #ffc107;
+  --border-color: #333333;
+  --accent-color: #ffca28;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s ease;
+}

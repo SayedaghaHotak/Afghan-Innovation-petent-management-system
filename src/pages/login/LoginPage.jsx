@@ -109,7 +109,7 @@ const handleSubmit = async (e) => {
       </div>
 
       <div className="login-right">
-        <div className='image-right'>
+        <div className='image-right' style={{height : '100%'}}>
           <img src={image} alt="innovation" />
         </div>
       </div>

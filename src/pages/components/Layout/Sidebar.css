@@ -1,0 +1,63 @@
+/* --- ساختار کلی سیدبار --- */
+.sidebar {
+  width: 210px;
+  height: 100vh;
+  background-color: var(--bg-sidebar); 
+  color: var(--text-sidebar);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* --- ۱. استایل هدر/لوگو --- */
+.sidebar-header {
+  padding: 25px; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: center; /* لوگو در مرکز قرار گیرد */
+  align-items: center;
+}
+
+/* --- ۲. ناویگیشن --- */
+.sidebar-nav {
+  flex: 1;
+  padding: 15px 0;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 13px 9px;
+  color: var(--text-sidebar);
+  text-decoration: none;
+  transition: 0.3s;
+  border-left: 5px solid transparent;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffc107;
+}
+
+.nav-item.active {
+  background-color: rgba(255, 255, 255, 0.1); /* هایلایت ملایم */
+  color: white;
+  border-left: 5px solid #ffc107; 
+  font-weight: bold;
+}
+
+.nav-icon {
+  margin-right: 15px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.nav-text {
+  font-size: 1rem;
+}
