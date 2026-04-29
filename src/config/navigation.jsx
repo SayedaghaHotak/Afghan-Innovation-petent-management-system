@@ -4,7 +4,7 @@ import {
 } from 'react-icons/fa';
 
 export const adminLinks = [
-  { name: 'Overview', path: '/admin/dashboard', icon: <FaThLarge /> },
+  { name: 'Overview', path: '/admin', icon: <FaThLarge /> },
   { name: 'Manage Users', path: '/admin/users', icon: <FaUsers /> },
   { name: 'Manage Committees', path: '/admin/committees', icon: <FaUserTie /> },
   { name: 'Manage Categories', path: '/admin/categories', icon: <FaTags /> },

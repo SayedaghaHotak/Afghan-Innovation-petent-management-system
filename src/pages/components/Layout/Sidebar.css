@@ -13,16 +13,16 @@
   z-index: 1000;
 }
 
-/* --- ۱. استایل هدر/لوگو --- */
+
 .sidebar-header {
   padding: 25px; 
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
-  justify-content: center; /* لوگو در مرکز قرار گیرد */
+  justify-content: center; 
   align-items: center;
 }
 
-/* --- ۲. ناویگیشن --- */
+
 .sidebar-nav {
   flex: 1;
   padding: 15px 0;

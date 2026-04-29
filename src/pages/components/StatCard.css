@@ -1,0 +1,87 @@
+/* تعریف رنگ‌ها بر اساس تم - بدون تغییر */
+:root {
+  --card-bg: #ffffff;
+  --title-color: #64748b;
+  --value-color: #1e293b;
+  --progress-bg: #f1f5f9;
+}
+
+[data-theme='dark'] {
+  --card-bg: #1e293b;
+  --title-color: #94a3b8;
+  --value-color: #f8fafc;
+  --progress-bg: #334155;
+}
+
+.stat-card {
+  background: var(--card-bg);
+  padding: 8px 15px; /* کمی پدینگ را بیشتر کردیم برای فضا */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden; /* مهم: برای اینکه گراف از گوشه‌های گرد بیرون نزند */
+  min-height: auto;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-title {
+  font-size: 13px;
+  color: var(--title-color);
+  font-weight: 500;
+}
+
+.stat-icon {
+  font-size: 1.6rem;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-body {
+  margin-top: 5px;
+}
+
+.stat-value {
+  font-size: 20px;
+  color: var(--value-color);
+  margin: 0;
+  font-weight: 700;
+}
+
+/* استایل جدید برای گراف */
+.stat-chart-wrapper {
+  margin: 2px -15px; /* منفی ۱۵ باعث می‌شود گراف به لبه‌های چپ و راست بچسبد */
+}
+
+.stat-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.stat-percentage {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-trend {
+  font-size: 12px;
+  color: var(--title-color);
+}

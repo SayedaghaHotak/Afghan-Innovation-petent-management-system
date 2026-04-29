@@ -12,7 +12,7 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-/* سمت چپ */
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
   cursor: pointer;
 }
 
-/* بخش جستجو */
+
 .nav-search {
   flex: 0 1 400px;
 }
@@ -65,14 +65,14 @@
   box-shadow: 0 0 5px rgba(0, 77, 64, 0.1);
 }
 
-/* سمت راست */
+
 .nav-right {
   display: flex;
   align-items: center;
   gap: 25px;
 }
 
-/* --- استایل دکمه لغزنده (Switch) مشابه موبایل --- */
+
 .theme-switch-container {
   display: flex;
   align-items: center;
@@ -88,8 +88,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 44px; /* عرض دکمه */
-  height: 22px; /* ارتفاع دکمه */
+  width: 44px; 
+  height: 22px; 
 }
 
 .switch input {
@@ -102,7 +102,7 @@
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc; /* رنگ در حالت خاموش */
+  background-color: #ccc;
   transition: .4s;
   border-radius: 34px;
 }
@@ -120,15 +120,15 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* وقتی دکمه روشن (On) می‌شود */
+
 input:checked + .slider {
-  background-color: #2196F3; /* رنگ آبی روشن مشابه موبایل */
+  background-color: #2196F3; 
 }
 
 input:checked + .slider:before {
-  transform: translateX(22px); /* حرکت به سمت راست */
+  transform: translateX(22px);
 }
-/* ------------------------------------------ */
+
 
 .nav-icon-badge {
   position: relative;

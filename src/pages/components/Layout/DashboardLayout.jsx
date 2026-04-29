@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from './Sidebar';
-import Navbar from './Navbar'; // ایمپورت نوبار جدید
+import Navbar from './Navbar'; 
 import './DashboardLayout.css';
 
 const DashboardLayout = ({ children, links, userProfile, pageTitle }) => {
@@ -9,7 +9,7 @@ const DashboardLayout = ({ children, links, userProfile, pageTitle }) => {
       <Sidebar links={links} userProfile={userProfile} />
 
       <div className="main-area" style={{ flex: 1, marginLeft: '188px' }}>
-        {/* نوبار را اینجا قرار می‌دهیم */}
+  
         <Navbar pageTitle={pageTitle} />
 
         <main className="content-area" style={{ padding: '25px' }}>

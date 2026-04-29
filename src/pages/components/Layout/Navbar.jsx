@@ -8,7 +8,7 @@ const Navbar = ({ pageTitle = "Dashboard" }) => {
     return savedTheme === 'dark';
   });
 
-  // --- استیت جدید برای ذخیره عکس آپلود شده ---
+ 
   const [profileImg, setProfileImg] = useState(() => {
     return localStorage.getItem('user-avatar') || null;
   });
@@ -18,7 +18,7 @@ const Navbar = ({ pageTitle = "Dashboard" }) => {
     localStorage.setItem('aims-theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
-  // --- تابع مدیریت انتخاب عکس ---
+  // --- انتخاب عکی ---
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -45,7 +45,7 @@ const Navbar = ({ pageTitle = "Dashboard" }) => {
       </div>
 
       <div className="nav-right">
-                {/* بخش آیکون خورشید و ماه برای تم */}
+                {/*بخش آیکون خورشید و ما   */}
         <div className="theme-toggle-icon" onClick={() => setIsDarkMode(!isDarkMode)}>
           {isDarkMode ? (
             <FaSun className="sun-icon" title="Switch to Light Mode" />

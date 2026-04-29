@@ -1,0 +1,86 @@
+.table-container {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-header h3 {
+  color: var(--title-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.view-all-btn {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+  background: #3b82f6;
+  color: white;
+}
+
+.table-responsive {
+  overflow-x: auto; /* Important for mobile screens */
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th {
+  text-align: left;
+  padding: 12px 15px;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.03);
+}
+
+.custom-table td {
+  padding: 15px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.item-title {
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+/* Status Badge Styles */
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.approved { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+.status-badge.pending { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+.status-badge.rejected { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+
+/* Dark Mode Adjustments */
+[data-theme='dark'] .custom-table th, 
+[data-theme='dark'] .custom-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}

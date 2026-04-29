@@ -1,4 +1,4 @@
-/* استایل کلی پروژه */
+
 * {
   margin: 0;
   padding: 0;
@@ -23,6 +23,11 @@ body {
   --text-sidebar: #ffffff;
   --border-color: #e0e0e0;
   --accent-color: #ffc107; /* طلایی AIMS */
+
+  --stat-card-bg: #ffffff;
+  --stat-value-color: #1e293b;
+  --stat-title-color: #64748b;
+  --stat-progress-bar-bg: #e2e8f0;
 }
 
 [data-theme='dark'] {
@@ -34,6 +39,12 @@ body {
   --text-sidebar: #ffc107;
   --border-color: #333333;
   --accent-color: #ffca28;
+
+  /* dark mode کارد ها  */
+  --stat-card-bg: #2d3748; /* یک رنگ تیره */
+  --stat-value-color: #f7fafc; /* رنگ روشن برای متن */
+  --stat-title-color: #a0aec0;
+  --stat-progress-bar-bg: #4a5568;
 }
 
 body {

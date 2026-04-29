@@ -1,0 +1,21 @@
+.main-chart-wrapper {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 25px 0; /* فاصله از کارت‌های بالا و بخش‌های پایین */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.chart-heading {
+  font-size: 16px;
+  color: var(--title-color);
+  margin-bottom: 20px;
+  font-weight: 600;
+  padding-right: 10px;
+}
+
+/* هماهنگی با تم تاریک */
+[data-theme='dark'] .main-chart-wrapper {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}

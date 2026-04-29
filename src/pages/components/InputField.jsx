@@ -16,7 +16,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, va
         className={error ? 'error' : ''}
         {...props}
       />
-      {/* چیلدرن باید اینجا باشد تا ارور صفحه سفید برطرف شود */}
+     
       {children} 
     </div>
     {error && <span className="error-text" style={{color: '#ef4444', fontSize: '12px'}}>{error}</span>}

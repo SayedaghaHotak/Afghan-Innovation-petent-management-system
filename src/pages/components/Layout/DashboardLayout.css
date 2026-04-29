@@ -2,17 +2,17 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
-  background-color: #f0f2f5; /* Light grey background for the whole app */
+  background-color: #f0f2f5; 
 }
 
 .sidebar-placeholder {
-  width: 260px; /* Standard professional width */
-  background-color: #010f35; /* Your Dark Green theme */
+  width: 260px; 
+  background-color: #010f35; 
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* We use fixed to keep it on the screen while scrolling */
+  
   position: fixed;
   height: 100vh;
 }
@@ -21,8 +21,12 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 260px; /* Matches the sidebar width so content isn't hidden */
+  margin-left: 188px; 
   background-color: var(--bg-main);
+
+  height: 100vh;
+  overflow: hidden;
+
 }
 
 .navbar-placeholder {
@@ -36,6 +40,9 @@
 }
 
 .content-area {
-  padding: 25px;
   color: var(--text-main);
+  display: flex;
+  padding: 0 !important;
+  flex: 1;
+  overflow: hidden;
 }
