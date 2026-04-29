@@ -8,7 +8,7 @@ public class IapmsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(IapmsApplication.class, args);
-		System.out.println("\n\n\n\n\n\nwelcome to Innovation and patent management system!\\n\\n\\n\\n\\n\\");
+		System.out.println("\n\nwelcome to Innovation and patent management system!");
 	}
 
 }

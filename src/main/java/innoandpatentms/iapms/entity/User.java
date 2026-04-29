@@ -1,21 +1,30 @@
 package innoandpatentms.iapms.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -23,13 +32,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
 @Entity
 @Table(name = "users")
-@Data
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class) // Critical for @CreatedDate
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)// Auto-increment ID generation without gaps
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "First name is required")
@@ -45,31 +58,71 @@ public class User {
     private String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "\\+[0-9]{10,15}$", message = "Invalid phone number format")
+    @Pattern(regexp = "^\\+[0-9]{10,15}$", message = "Invalid phone number format (e.g. +1234567890)")
     private String phoneNumber;
 
-    // Security: WRITE_ONLY ensures password isn't leaked in JSON responses
+    /**
+     * Security: WRITE_ONLY ensures password isn't leaked in API responses.
+     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password is required")
     private String password;
 
-    // EAGER fetch ensures roles are loaded immediately for Security checks
+    /**
+     * EAGER fetch ensures roles are loaded for Spring Security immediately.
+     * Initializing with HashSet avoids NullPointer on new objects.
+     */
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "roles")
+    private Set<String> roles = new HashSet<>();
 
-    // Relationship to Patents (One User has Many Patents)
+    /**
+     * Track when the account was created.
+     */
+    @CreatedDate
+    @Column(name = "created_at", updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+
+    /**
+     * Track when profile/password was last changed.
+     */
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    /**
+     * Relationship to Patents.
+     * JsonIgnore prevents infinite recursion.
+     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore // Prevents infinite recursion in JSON
+    @JsonIgnore 
     private List<Patent> patents = new ArrayList<>();
 
-    // Relationship to Committees (A Reviewer can be in multiple Committees)
+    /**
+     * Relationship to Committees.
+     */
     @ManyToMany(mappedBy = "members")
-    @JsonIgnore // Prevents loop when viewing Committee members
+    @JsonIgnore 
     private List<Committee> committees = new ArrayList<>();
 
+    /**
+     * Helper Method: Combines first and last name.
+     */
+    @JsonProperty("fullName")
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    /**
+     * STRENGTHENED SETTER: 
+     * Ensures roles are always stored Trimmed and Uppercase to match SecurityConfig.
+     */
     public void setRoles(Set<String> roles) {
-    this.roles = roles.stream()
-                      .map(String::toUpperCase)
-                      .collect(Collectors.toSet());
-}
+        if (roles != null) {
+            this.roles = roles.stream()
+                             .map(role -> role.trim().toUpperCase())
+                             .collect(Collectors.toSet());
+        }
+    }
 }

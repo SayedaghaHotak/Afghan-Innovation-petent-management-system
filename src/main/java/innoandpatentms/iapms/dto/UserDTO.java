@@ -32,4 +32,5 @@ public class UserDTO {
 
     @NotBlank(message = "Please confirm your password")
     private String confirmPassword;
+
 }
