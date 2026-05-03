@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import innoandpatentms.iapms.entity.Patent;
+<<<<<<< HEAD
 import innoandpatentms.iapms.entity.Status; // IMPORT ENUM
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 import innoandpatentms.iapms.repository.PatentRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +30,7 @@ public class ReviewerController {
             @RequestParam String status,
             @RequestParam String feedback) {
         
+<<<<<<< HEAD
         Patent patent = patentRepository.findById(patentId)
                 .orElseThrow(() -> new RuntimeException("Patent not found"));
         
@@ -49,5 +53,18 @@ public class ReviewerController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid status. Please use APPROVED, or REJECTED.");
         }
+=======
+        Patent patent = patentRepository.findById(patentId).orElseThrow();
+        
+        if (!status.equalsIgnoreCase("APPROVED") && !status.equalsIgnoreCase("REJECTED")) {
+            return ResponseEntity.badRequest().body("Invalid status.");
+        }
+
+        patent.setStatus(status.toUpperCase());
+        patent.setReviewerFeedback(feedback);
+        
+        patentRepository.save(patent);
+        return ResponseEntity.ok("Decision recorded: " + status);
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     }
 }

@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 package innoandpatentms.iapms.repository;
 
+=======
+
+package innoandpatentms.iapms.repository;
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +18,7 @@ import innoandpatentms.iapms.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
+<<<<<<< HEAD
     /**
      * AUTHENTICATION: Used by CustomUserDetailsService to load user during login.
      */
@@ -34,6 +40,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * DASHBOARD STATS: Counts users by a specific role (e.g., 'INNOVATOR').
      * Used in AdminService to populate totalInnovators.
      */
+=======
+    Optional<User> findByEmail(String email);
+    
+    boolean existsByEmail(String email);
+
+    // FIX: Use a custom query to find users who have "INNOVATOR" in their roles set
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r = 'INNOVATOR'")
+    List<User> findAllInnovators();
+
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     @Query("SELECT COUNT(u) FROM User u JOIN u.roles r WHERE r = :role")
     long countByRolesContaining(@Param("role") String role);
 }

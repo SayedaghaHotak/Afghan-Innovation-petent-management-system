@@ -8,7 +8,10 @@ import lombok.Data;
 
 @Data
 public class UserDTO {
+<<<<<<< HEAD
     
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     @Pattern(regexp = "^[\\p{L}\\p{M}\\s'-]+$", message = "Invalid characters in first name")

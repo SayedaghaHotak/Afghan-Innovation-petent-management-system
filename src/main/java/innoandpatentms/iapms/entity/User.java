@@ -25,7 +25,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+<<<<<<< HEAD
 import jakarta.persistence.JoinTable;
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -115,7 +118,12 @@ public class User {
         return firstName + " " + lastName;
     }
 
+<<<<<<< HEAD
     /*
+=======
+    /**
+     * STRENGTHENED SETTER: 
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
      * Ensures roles are always stored Trimmed and Uppercase to match SecurityConfig.
      */
     public void setRoles(Set<String> roles) {
@@ -125,6 +133,7 @@ public class User {
                              .collect(Collectors.toSet());
         }
     }
+<<<<<<< HEAD
 
     @ManyToMany
     @JoinTable(
@@ -133,4 +142,6 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "committee_id")
     )
     private Set<Committee> committeesSet = new HashSet<>();
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 }

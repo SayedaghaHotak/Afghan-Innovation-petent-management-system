@@ -32,13 +32,24 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // 2. Map roles to Spring Authorities with extra safety checks
         // Added a null check for user.getRoles() to ensure reliability
+<<<<<<< HEAD
         // Change this part in loadUserByUsername method:
+=======
+        // Change this part in your loadUserByUsername method:
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
        // Inside loadUserByUsername, change the map logic to this:
         List<SimpleGrantedAuthority> authorities = (user.getRoles() == null) 
             ? Collections.emptyList() 
             : user.getRoles().stream()
                 .filter(role -> role != null && !role.isBlank())
+<<<<<<< HEAD
                 .map(role -> new SimpleGrantedAuthority(role.trim().toUpperCase()))
+=======
+                .map(role -> {
+                    // NO "ROLE_" prefix logic here. Just the raw string.
+                    return new SimpleGrantedAuthority(role.trim().toUpperCase());
+                })
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
                 .collect(Collectors.toList());
 
         // DEBUG: Check your console! If this shows [], your user has no roles in the DB.

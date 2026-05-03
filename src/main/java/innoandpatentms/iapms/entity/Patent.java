@@ -4,15 +4,21 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+<<<<<<< HEAD
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+<<<<<<< HEAD
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +38,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "patents")
+<<<<<<< HEAD
 @EntityListeners(AuditingEntityListener.class)
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 public class Patent {
 
     @Id
@@ -41,6 +50,7 @@ public class Patent {
 
     private String title;
     
+<<<<<<< HEAD
     @Column(length = 2000)
     private String description;
     private String category;
@@ -53,6 +63,18 @@ public class Patent {
     private Status status = Status.PENDING;
 
     // Timestamps for auditing purposes
+=======
+    @Column(length = 2000) // Increased length for detailed project descriptions
+    private String description;
+    
+    private String category;
+
+    // Default status set to PENDING
+    private String status = "PENDING";
+
+    // Timestamps for auditing purposes
+
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
@@ -67,10 +89,17 @@ public class Patent {
     // --- NEW FILE HANDLING FEATURES ---
     
     /**
+<<<<<<< HEAD
      * The absolute path where the file is stored on our local computer.
      * e.g., "C:/iapms_system/uploads/1714123456_project.mp4"
      */
     private String attachmentPath;
+=======
+     * The absolute path where the file is stored on your local computer.
+     * e.g., "C:/iapms_system/uploads/1714123456_project.mp4"
+     */
+    private String attachmentPath; 
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 
     /**
      * The original name of the file uploaded by the user.
@@ -95,7 +124,11 @@ public class Patent {
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
+<<<<<<< HEAD
     @JsonIgnore
+=======
+    @JsonIgnore 
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     private User user;
 
     /**
@@ -110,6 +143,10 @@ public class Patent {
      * To remember that this patent is resubmitted after changes, 
      * so that reviewers can be notified to re-review it.
      */
+<<<<<<< HEAD
     private boolean resubmitted = false;
 
+=======
+    private boolean isResubmitted = false;
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 }

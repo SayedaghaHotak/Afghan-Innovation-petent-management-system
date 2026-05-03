@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import innoandpatentms.iapms.entity.Committee;
 import innoandpatentms.iapms.entity.Patent;
+<<<<<<< HEAD
 import innoandpatentms.iapms.entity.Status;
+=======
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 import innoandpatentms.iapms.entity.User;
 import innoandpatentms.iapms.repository.CommitteeRepository;
 import innoandpatentms.iapms.repository.PatentRepository;
@@ -29,7 +32,11 @@ import innoandpatentms.iapms.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
+<<<<<<< HEAD
  * Centralized Administrative Controller for project.
+=======
+ * Centralized Administrative Controller for IAPMS.
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
  * * CORE FEATURES:
  * 1. Committee Management: Prevents duplicate names and manages member assignments.
  * 2. User & Role Management: Dynamically promotes/demotes users.
@@ -60,6 +67,7 @@ public class AdminController {
      * Creates a new specialized Review Committee.
      * ADVANCED VALIDATION: Prevents duplicate meanings (e.g., "AI Board" vs "Board of AI").
      */
+<<<<<<< HEAD
 @PostMapping("/committees/create")
     public ResponseEntity<?> createCommittee(@RequestBody Committee committee) {
         String inputName = committee.getName().trim();
@@ -86,26 +94,82 @@ public class AdminController {
                 .filter(word -> !stopWords.contains(word))
                 .sorted()
                 .collect(Collectors.joining(" "));
+=======
+    @PostMapping("/committees/create")
+    public ResponseEntity<?> createCommittee(@RequestBody Committee committee) {
+            String inputName = committee.getName().trim();
+            String inputFingerprint = generateFingerprint(inputName);
+
+            // Check database for semantic duplicates
+            boolean exists = committeeRepository.findAll().stream()
+                    .anyMatch(c -> generateFingerprint(c.getName()).equals(inputFingerprint));
+
+            if (exists) {
+                return ResponseEntity.badRequest()
+                        .body("Error: A committee with a similar meaning already exists.");
+            }
+
+            committee.setName(inputName);
+            return ResponseEntity.ok(committeeRepository.save(committee));
+        }
+
+        /**
+         * Helper method to normalize names for semantic comparison.
+         * Converts "Project of Software Engineering" -> "engineering project software"
+         */
+        private String generateFingerprint(String name) {
+        if (name == null) return "";
+        
+        // 1. Convert to lowercase and remove non-alphanumeric characters
+        String clean = name.toLowerCase().replaceAll("[^a-z0-9\\s]", "");
+        
+        // 2. Split into words and filter out "noise" words
+        List<String> stopWords = Arrays.asList("of", "the", "and", "for", "with", "in", "at");
+        
+        return Arrays.stream(clean.split("\\s+"))
+                .filter(word -> !stopWords.contains(word)) // Remove "of", "the", etc.
+                .sorted()                                  // Sort words alphabetically
+                .collect(Collectors.joining(" "));         // Join back together
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     }
     
     /**
      * Deletes a committee from the system.
      * Logic: Removes associations in the join table first, then deletes the committee.
      */
+<<<<<<< HEAD
 @DeleteMapping("/committees/delete/{id}")
     @Transactional
     public ResponseEntity<String> deleteCommittee(@PathVariable Long id) {
         Committee committee = committeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Committee not found with ID: " + id));
 
+=======
+    @DeleteMapping("/committees/delete/{id}")
+    @Transactional
+    public ResponseEntity<String> deleteCommittee(@PathVariable Long id) {
+        // 1. Find the committee or throw error
+        Committee committee = committeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Committee not found with ID: " + id));
+
+        // 2. SAFETY CHECK: Check if the committee is linked to any patents
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
         List<Patent> assignedPatents = patentRepository.findByAssignedCommittee(committee);
         if (!assignedPatents.isEmpty()) {
             return ResponseEntity.badRequest()
                     .body("Cannot delete: This committee is currently reviewing " + assignedPatents.size() + " patents.");
         }
 
+<<<<<<< HEAD
         committee.getMembers().clear();
         committeeRepository.save(committee);
+=======
+        // 3. CLEANUP: Clear the members list to remove entries from the many-to-many join table
+        committee.getMembers().clear();
+        committeeRepository.save(committee);
+
+        // 4. DELETE: Remove the record
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
         committeeRepository.delete(committee);
 
         return ResponseEntity.ok("Committee '" + committee.getName() + "' deleted successfully.");
@@ -114,7 +178,11 @@ public class AdminController {
      * Assigns a User to a specific Committee group.
      * AUTOMATIC ROLE UPGRADE: Assigns 'REVIEWER' role if the user doesn't have it.
      */
+<<<<<<< HEAD
 @PostMapping("/committees/{cId}/add-reviewer/{uId}")
+=======
+    @PostMapping("/committees/{cId}/add-reviewer/{uId}")
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     @Transactional
     public ResponseEntity<String> addReviewerToGroup(@PathVariable Long cId, @PathVariable Long uId) {
         Committee committee = committeeRepository.findById(cId)
@@ -125,16 +193,30 @@ public class AdminController {
 
         if (!committee.getMembers().contains(user)) {
             committee.getMembers().add(user);
+<<<<<<< HEAD
+=======
+            
+            // Sync Role: Ensure user can access Reviewer dashboard
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
             if (!user.getRoles().contains("REVIEWER")) {
                 user.getRoles().add("REVIEWER");
                 userRepository.save(user); 
             }
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
             committeeRepository.save(committee);
         }
         
         return ResponseEntity.ok("Success: User " + user.getFirstName() + " added to " + committee.getName());
     }
+<<<<<<< HEAD
 @GetMapping("/committees")
+=======
+
+    @GetMapping("/committees")
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     public ResponseEntity<List<Committee>> getAllCommittees() {
         return ResponseEntity.ok(committeeRepository.findAll());
     }
@@ -147,6 +229,7 @@ public class AdminController {
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }
+<<<<<<< HEAD
     /**
      * Toggles specific roles for a user.
      * Note: Input 'role' string should not include "ROLE_" as it's added by the service.
@@ -156,11 +239,24 @@ public class AdminController {
     public ResponseEntity<String> assignCommitteeAdmin(
             @PathVariable Long committeeId,
             @PathVariable Long userId,
+=======
+
+    /**
+     * Toggles specific roles for a user.
+     * Note: Input 'role' string should not include "ROLE_" as it's added by the service.
+     */
+    @PutMapping("/role-toggle/{userId}")
+    @Transactional
+    public ResponseEntity<String> toggleRole(
+            @PathVariable Long userId, 
+            @RequestParam String role, 
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
             @RequestParam boolean add) {
         
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
+<<<<<<< HEAD
         Committee committee = committeeRepository.findById(committeeId)
                 .orElseThrow(() -> new RuntimeException("Committee not found"));
         
@@ -194,6 +290,23 @@ public class AdminController {
         
         userRepository.save(user);
         return ResponseEntity.ok("Admin updated for " + committee.getName());
+=======
+        // Clean input (remove ROLE_ if prefix was sent) and uppercase
+        String formattedRole = role.toUpperCase().replace("ROLE_", "").trim();
+        
+        if (add) {
+            user.getRoles().add(formattedRole);
+        } else {
+            // Safety: Prevent removing ADMIN from the primary system account (User ID 1)
+            if (userId == 1 && formattedRole.equals("ADMIN")) {
+                return ResponseEntity.badRequest().body("Security: Primary Admin role cannot be removed.");
+            }
+            user.getRoles().remove(formattedRole);
+        }
+        
+        userRepository.save(user);
+        return ResponseEntity.ok("Role " + formattedRole + " updated successfully for " + user.getEmail());
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     }
 
     // ==========================================
@@ -203,6 +316,7 @@ public class AdminController {
     /**
      * Admin Override: Finalizes a patent decision bypassing the committee.
      */
+<<<<<<< HEAD
 @PutMapping("/decide/{id}")
     @Transactional
     public ResponseEntity<?> adminDecide(
@@ -223,6 +337,22 @@ public class AdminController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Invalid status provided. Valid options are: " + Arrays.toString(Status.values()));
         }
+=======
+    @PutMapping("/decide/{id}")
+    @Transactional
+    public ResponseEntity<Patent> adminDecide(
+            @PathVariable Long id, 
+            @RequestParam String status, 
+            @RequestParam String feedback) {
+        
+        Patent p = patentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patent not found"));
+        
+        p.setStatus(status.toUpperCase());
+        p.setReviewerFeedback("ADMIN OVERRIDE: " + feedback);
+        
+        return ResponseEntity.ok(patentRepository.save(p));
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
     }
 
     @GetMapping("/stats")
@@ -231,9 +361,15 @@ public class AdminController {
         stats.put("totalUsers", userRepository.count());
         stats.put("totalCommittees", committeeRepository.count());
         stats.put("totalPatents", patentRepository.count());
+<<<<<<< HEAD
         
         // Ensure these methods in PatentRepository accept the Status Enum
         stats.put("pendingPatents", patentRepository.findByStatus(Status.PENDING).size());
+=======
+        stats.put("pendingPatents", patentRepository.findByStatus("PENDING").size());
+        stats.put("modificationRequiredCount", patentRepository.findByStatus("MODIFICATION_REQUIRED").size());
+        
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
         return ResponseEntity.ok(stats);
     }
 }

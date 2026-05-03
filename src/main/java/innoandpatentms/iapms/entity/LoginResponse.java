@@ -5,6 +5,7 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+<<<<<<< HEAD
 import lombok.NoArgsConstructor;
 
 @Data
@@ -23,4 +24,16 @@ public class LoginResponse {
      * Example: {"pendingPatents": 2, "approvedPatents": 5}
      */
     private Map<String, Object> dashboardSummary;
+=======
+
+@Data
+@AllArgsConstructor
+public class LoginResponse {
+    private String message; // "Login Successful"
+    private String firstName;
+    private Set<String> roles;
+    
+    // Summary of operations (e.g., {"pendingPatents": 2, "approvedPatents": 1})
+    private Map<String, Object> dashboardSummary; 
+>>>>>>> 293d29251395257b79b7bd5c8424ecdc5e43622b
 }
