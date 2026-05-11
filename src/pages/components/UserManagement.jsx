@@ -15,14 +15,13 @@ const UserManagement = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("آیا حذف شود؟")) {
+    if (window.confirm("Are you sure to delete؟")) {
       setUsers(users.filter(u => u.id !== id));
       setOpenMenuId(null);
     }
   };
 
-
-  // اضافه کردن این useEffect برای بستن منو با کلیک روی صفحه
+  // بستن مینو زمانیکه بالای تمام صفحه کلیک شود 
     useEffect(() => {
       const handleClickOutside = (event) => {
         // اگر کلیک خارج از دکمه منو بود، منو را ببند
@@ -36,11 +35,6 @@ const UserManagement = () => {
         document.removeEventListener('click', handleClickOutside);
       };
     }, []);
-
-
- 
-
-
 
   return (
     <div className="user-mgmt-section">

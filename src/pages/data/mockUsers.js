@@ -1,23 +1,18 @@
-// src/data/mockData.js
-
+// --- بخش کاربران و احراز هویت (بدون تغییر) ---
 export let mockUsers = [
   { id: 1, email: 'admin@gmail.com', password: 'admin123', name: 'Admin User', role: 'admin' },
   { id: 2, email: 'user@gmail.com', password: 'user123', name: 'Regular User', role: 'user' },
   { id: 3, email: 'test@gmail.com', password: 'test123', name: 'Test User', role: 'user' }
 ];
 
-//  چک می‌کند آیا ایمیل و پسورد در لیست هست یا نه
 export const loginUser = (email, password) => {
   const user = mockUsers.find(u => u.email === email && u.password === password);
   return user ? user : null;
 };
 
-// : کاربر جدید را به لیست اضافه می‌کند
 export const registerUser = (userData) => {
   const exists = mockUsers.some(u => u.email === userData.email);
-  if (exists) {
-    return { success: false, message: "این ایمیل قبلاً ثبت شده است!" };
-  }
+  if (exists) return { success: false, message: "این ایمیل قبلاً ثبت شده است!" };
 
   const newUser = {
     id: mockUsers.length + 1,
@@ -27,15 +22,11 @@ export const registerUser = (userData) => {
     phone: userData.phone,
     role: 'user'
   };
-
-  mockUsers.push(newUser); // اضافه کردن به دیتابیس موقت
+  mockUsers.push(newUser); 
   return { success: true, user: newUser };
 };
 
-
-// last 30 days innovations data 
-
-
+// --- دیتای نمودار و درخواست‌ها (بدون تغییر) ---
 export const dailyInventionData = [
   { day: '1', inventions: 2 }, { day: '2', inventions: 4 }, { day: '3', inventions: 3 },
   { day: '4', inventions: 7 }, { day: '5', inventions: 5 }, { day: '6', inventions: 9 },
@@ -49,8 +40,6 @@ export const dailyInventionData = [
   { day: '28', inventions: 7 }, { day: '29', inventions: 6 }, { day: '30', inventions: 9 },
 ];
 
-
-// recent table fake data
 export const recentApplications = [
   { id: '001', title: 'Smart Solar Tracker', innovetor: 'Alhamuddin Mayatr', date: '2026-04-20', status: 'Pending' },
   { id: '002', title: 'Automated Irrigation', innovetor: 'Farid shakir', date: '2026-04-22', status: 'Approved' },
@@ -60,63 +49,154 @@ export const recentApplications = [
   { id: '006', title: 'Wind Turbine v2', innovetor: 'Abdulhaq Nikzad', date: '2026-04-26', status: 'Pending' },
   { id: '007', title: 'Smart Solar Tracker', innovetor: 'Alhamuddin Mayatr', date: '2026-04-20', status: 'Pending' },
   { id: '008', title: 'Automated Irrigation', innovetor: 'Farid shakir', date: '2026-04-22', status: 'Approved' },
-  { id: '009', title: 'Water Purifier Pro', innovetor: 'Sayedagha Hotak', date: '2026-04-24', status: 'Rejected' },
-  { id: '010', title: 'AI Crop Analysis', innovetor: 'ahmad Khan', date: '2026-04-25', status: 'Pending' },
-  { id: '011', title: 'Wind Turbine v2', innovetor: 'Abdulhaq Nikzad', date: '2026-04-26', status: 'Pending' },
+  { id: '009', title: 'Automated Irrigation', innovetor: 'Farid shakir', date: '2026-04-22', status: 'Approved' },
+  { id: '010', title: 'Water Purifier Pro', innovetor: 'Sayedagha Hotak', date: '2026-04-24', status: 'Rejected' },
+  { id: '011', title: 'AI Crop Analysis', innovetor: 'ahmad Khan', date: '2026-04-25', status: 'Pending' },
+  { id: '012', title: 'Wind Turbine v2', innovetor: 'Abdulhaq Nikzad', date: '2026-04-26', status: 'Pending' },
 ];
 
 export const usersData = [
-  { 
-    id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10',avatar: '' // اینجا لینک عکس واقعی یوزر از دیتابیس است
-  },
-  { 
-    id: 2, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 3, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 4, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 5, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 6, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 7, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 8, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 9, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 10, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 11, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'innovetor', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 12, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 13, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 14, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 15, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 16, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  },
-   { 
-    id: 17, fullName: 'FaridGul ', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15',avatar: ''
-  }
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' }
+];
 
+// --- بخش کمیته‌ها (اصلاح شده برای جلوگیری از ارور) ---
+export const mockCommittees = [
+  { 
+    id: 1, 
+    name: 'Technical Review', 
+     
+    chair: 'Dr. Ahmad Wali', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }, { id: 2, name: 'Dr. sheft' }, { id: 3, name: 'Dr. jert' }, { id: 4, name: 'Dr. Ahmad Wali' }, { id: 5, name: 'Dr. sheft' }, { id: 6, name: 'Dr. jert' }], 
+    type: 'Technical',
+    description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 2, 
+    name: 'Medical Ethics', 
+  
+    chair: 'Prof. Mariam', 
+    members: [], 
+    type: 'Health', 
+      description: "", 
+    expertise: ['Medical', 'Bio-Ethics'] 
+  },
+   { 
+    id: 3, 
+    name: 'Agree culture', 
+  
+    chair: 'Dr. Sayedagha', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+   { 
+    id: 4, 
+    name: 'ceval Engineering', 
+    
+    chair: 'Dr. Faysal', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+   { 
+    id: 5, 
+    name: 'Honar ', 
+    
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 6, 
+    name: 'Honar ', 
+  
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 7, 
+    name: 'Honar ', 
+  
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 8, 
+    name: 'Honar ', 
+    
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 9, 
+    name: 'DaD ', 
+   
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: "", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },
+  { 
+    id: 10, 
+    name: 'SAD ', 
+  
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },{ 
+    id: 11, 
+    name: 'SQA', 
+ 
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  },{ 
+    id: 12, 
+    name: 'data Science ', 
+   
+    chair: 'Dr. Sahel', 
+    members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
+    type: 'Technical', 
+      description: " ", 
+    expertise: ['AI', 'Cloud', 'Security'] 
+  }
 
 ];

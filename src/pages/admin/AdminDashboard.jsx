@@ -9,6 +9,7 @@ import { dailyInventionData, recentApplications } from '../data/mockUsers';
 import MainAreaChart from '../components/MainAreaChart';
 import RecentApplicationsTable from '../components/RecentApplicationsTable';
 import UserManagement from '../components/UserManagement';
+import CommitteeManagement from '../components/Commitee/CommitteeManagement';
 
 const AdminDashboard = () => {
   const adminProfile = { name: "Hotak", role: "Admin", avatar: null };
@@ -62,7 +63,11 @@ const AdminDashboard = () => {
             </div>
           } />
           <Route path="users" element={<UserManagement />} />
+
+          <Route path="committees" element={<CommitteeManagement />} />
         </Routes>
+        
+        
       </div>
       
     </DashboardLayout>
