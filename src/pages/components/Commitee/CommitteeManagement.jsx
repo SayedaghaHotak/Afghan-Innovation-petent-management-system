@@ -5,6 +5,7 @@ import { FaSitemap, FaUserCheck, FaClipboardCheck, FaRegLightbulb, FaTimes } fro
 import CommitteeTable from './CommiteeTable';
 import CommitteePanel from './CommitteePanel';
 import './Commitee.css';
+import CreateCommitteeModal from '../NewCommittee/CreateCommitteeModal';
 
 const CommitteeManagement = () => {
   const [committees, setCommittees] = useState(mockCommittees);
@@ -23,6 +24,40 @@ const CommitteeManagement = () => {
     return matchesSearch && matchesFilter;
   });
 
+// delete committee
+  const handleDeleteCommittee = (committeeId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this committee?");
+    if (confirmDelete){
+      const updated= committees.filter(c => c.id !== committeeId);
+      setCommittees(updated);
+      if (selectedCommittee && selectedCommittee.id === committeeId){
+        setSelectedCommittee(null);
+      }
+    };
+  };
+
+  // create new committee
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const handleSaveNewCommittee = (data) => {
+      // Logic for your Mock Data (And later your API)
+      const newCommittee = {
+        ...data,
+        id: Date.now(), // Unique ID
+        chair: "Unassigned", 
+        members: [], // Starts with 0 members
+        type: "General" 
+      };
+
+      setCommittees([newCommittee, ...committees]);
+      setIsCreateModalOpen(false); // Close modal
+   };
+  
+
+
+
+
+// to update committee image 
   const handleUpdateImage = (base64Image) => {
     const updated = committees.map(c => 
       c.id === selectedCommittee.id ? { ...c, image: base64Image } : c
@@ -31,19 +66,69 @@ const CommitteeManagement = () => {
     setSelectedCommittee({ ...selectedCommittee, image: base64Image });
   };
 
-  const handleAddMemberAction = (user) => {
+  // to delete member from committee
+  const handleRemoveMember = (committeeId, memberId) => {
+  // 1. Ask for confirmation
+  const confirmDelete = window.confirm("Are you sure you want to remove this member?");
+  
+  if (confirmDelete) {
+    // 2. Update the main committees list
     const updatedCommittees = committees.map(c => {
-      if (c.id === selectedCommittee.id) {
-        if (c.members.some(m => m.id === user.id)) return c;
-        return { ...c, members: [...c.members, { id: user.id, name: user.name }] };
+      if (c.id === committeeId) {
+        return {
+          ...c,
+          members: c.members.filter(m => m.id !== memberId)
+        };
       }
       return c;
     });
+
     setCommittees(updatedCommittees);
-    setSelectedCommittee(updatedCommittees.find(c => c.id === selectedCommittee.id));
+
+    // 3. Update the side panel (selectedCommittee) so the name disappears immediately
+    if (selectedCommittee && selectedCommittee.id === committeeId) {
+      setSelectedCommittee({
+        ...selectedCommittee,
+        members: selectedCommittee.members.filter(m => m.id !== memberId)
+      });
+    }
+  }
+};
+
+
+// to add member to committee
+  const handleAddMemberAction = (user) => {
+if (!selectedCommittee) {
+    console.error("No committee selected to add members to.");
     setShowUserSelector(false);
+    return;
+  }
+  const updatedCommittees = committees.map(c => {
+    if (c.id === selectedCommittee.id) {
+      const isAlreadyMember = c.members.some(m => m.id === user.id);
+      
+      if (isAlreadyMember) {
+        alert(`${user.name} is already in this committee.`);
+        return c; 
+      }
+
+      return { 
+        ...c, 
+        members: [...c.members, { id: user.id, name: user.name }] 
+      };
+    }
+    return c;
+  });
+
+  setCommittees(updatedCommittees);
+  const updatedCurrent = updatedCommittees.find(c => c.id === selectedCommittee.id);
+  if (updatedCurrent) {
+    setSelectedCommittee(updatedCurrent);
+  }
+  setShowUserSelector(false);
   };
 
+  // to save edited committee information
   const handleSaveEdit = (e) => {
     e.preventDefault();
     const updatedCommittees = committees.map(c => 
@@ -69,7 +154,10 @@ const CommitteeManagement = () => {
             <h1>Committees Inventory</h1>
             <p>{filteredData.length} committees matching your criteria</p>
           </div>
-          <button className="create-btn">+ New Committee</button>
+
+
+          
+          <button className="create-btn" onClick={() => setIsCreateModalOpen(true)}>+ New Committee</button>
         </header>
 
         <div className="cm-main-layout">
@@ -79,6 +167,7 @@ const CommitteeManagement = () => {
               onSelectCommittee={setSelectedCommittee}
               setSearchTerm={setSearchTerm}
               setFilterType={setFilterType}
+              onDeleteCommittee={handleDeleteCommittee}
             />
           </div>
           
@@ -89,6 +178,7 @@ const CommitteeManagement = () => {
                 onEdit={() => { setEditFormData(selectedCommittee); setShowEditModal(true); }}
                 onAdd={() => setShowUserSelector(true)}
                 onImageChange={handleUpdateImage}
+                onRemoveMember={handleRemoveMember}
               />
             ) : (
               <div className="empty-panel-state">
@@ -97,6 +187,17 @@ const CommitteeManagement = () => {
               </div>
             )}
           </div>
+
+          <CreateCommitteeModal 
+            isOpen={isCreateModalOpen} 
+            onClose={() => setIsCreateModalOpen(false)} 
+            onSave={handleSaveNewCommittee} 
+          />
+
+
+
+
+
         </div>
       </div>
 
@@ -171,5 +272,6 @@ const CommitteeManagement = () => {
     </div>
   );
 };
+
 
 export default CommitteeManagement;

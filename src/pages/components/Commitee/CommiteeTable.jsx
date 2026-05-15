@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaSearch, FaFilter, FaEllipsisV } from 'react-icons/fa';
 
-const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType }) => {
+const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType, onDeleteCommittee }) => {
   return (
     <div className="table-inner">
       <div className="table-controls">
@@ -52,7 +52,14 @@ const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType 
                   {Array.isArray(item.members) ? item.members.length : 0} Members
                 </span>
               </td>
-              <td><button className="more-btn" onClick={(e) => e.stopPropagation()}><FaEllipsisV /></button></td>
+              <td>
+                <button className="more-btn" onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteCommittee(item.id);
+                }}>
+                  <FaEllipsisV />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { FaUserCircle, FaEllipsisV, FaUserPlus, FaEdit, FaCrown, FaCamera } from 'react-icons/fa';
 
-const CommitteePanel = ({ committee, onEdit, onAdd, onImageChange }) => {
+const CommitteePanel = ({ committee, onEdit, onAdd, onImageChange, onRemoveMember }) => {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -49,7 +49,10 @@ const CommitteePanel = ({ committee, onEdit, onAdd, onImageChange }) => {
                 <span>{member.name}</span>
               </div>
               <div className="member-options">
-                <button className="dot-menu-btn"><FaEllipsisV /></button>
+                <button
+                 className="dot-menu-btn" onClick={() => onRemoveMember(committee.id, member.id)}>
+                  <FaEllipsisV />
+                  </button>
               </div>
             </div>
           ))}

@@ -10,10 +10,15 @@ import MainAreaChart from '../components/MainAreaChart';
 import RecentApplicationsTable from '../components/RecentApplicationsTable';
 import UserManagement from '../components/UserManagement';
 import CommitteeManagement from '../components/Commitee/CommitteeManagement';
+import { mockCommittees} from '../data/mockUsers';
+import AllInnovations from '../components/All-innovation/AllInnovation';
+
+
+
 
 const AdminDashboard = () => {
   const adminProfile = { name: "Hotak", role: "Admin", avatar: null };
-
+ 
   // استایل‌های مستقیم برای حل فوری مشکل
   const gridStyle = {
     display: 'grid',
@@ -65,6 +70,9 @@ const AdminDashboard = () => {
           <Route path="users" element={<UserManagement />} />
 
           <Route path="committees" element={<CommitteeManagement />} />
+
+          <Route path="innovations" element={<AllInnovations committees={mockCommittees} />} />
+         
         </Routes>
         
         

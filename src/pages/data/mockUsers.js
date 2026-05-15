@@ -2,7 +2,9 @@
 export let mockUsers = [
   { id: 1, email: 'admin@gmail.com', password: 'admin123', name: 'Admin User', role: 'admin' },
   { id: 2, email: 'user@gmail.com', password: 'user123', name: 'Regular User', role: 'user' },
-  { id: 3, email: 'test@gmail.com', password: 'test123', name: 'Test User', role: 'user' }
+  { id: 3, email: 'test@gmail.com', password: 'test123', name: 'Test User', role: 'user' },
+  { id: 4, email: 'farid@gmail.com', password: 'farid123', name: 'Farid Shakir', role: 'user' }
+
 ];
 
 export const loginUser = (email, password) => {
@@ -58,24 +60,24 @@ export const recentApplications = [
 export const usersData = [
   { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
   { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
-  { id: 1, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
-  { id: 2, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' }
+  { id: 3, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 4, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 5, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 6, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 7, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 8, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 9, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 10, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 11, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 12, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 13, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 14, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 15, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 16, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 17, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 18, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' },
+  { id: 19, fullName: 'Sayedagha', email: 'sayedagha@example.com', role: 'Innovetor', joinDate: '2026-01-10', avatar: '' },
+  { id: 20, fullName: 'FaridGul', email: 'faridgul@example.com', role: 'Reviewer', joinDate: '2026-02-15', avatar: '' }
 ];
 
 // --- بخش کمیته‌ها (اصلاح شده برای جلوگیری از ارور) ---
@@ -83,7 +85,6 @@ export const mockCommittees = [
   { 
     id: 1, 
     name: 'Technical Review', 
-     
     chair: 'Dr. Ahmad Wali', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }, { id: 2, name: 'Dr. sheft' }, { id: 3, name: 'Dr. jert' }, { id: 4, name: 'Dr. Ahmad Wali' }, { id: 5, name: 'Dr. sheft' }, { id: 6, name: 'Dr. jert' }], 
     type: 'Technical',
@@ -93,7 +94,6 @@ export const mockCommittees = [
   { 
     id: 2, 
     name: 'Medical Ethics', 
-  
     chair: 'Prof. Mariam', 
     members: [], 
     type: 'Health', 
@@ -103,7 +103,6 @@ export const mockCommittees = [
    { 
     id: 3, 
     name: 'Agree culture', 
-  
     chair: 'Dr. Sayedagha', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
     type: 'Technical', 
@@ -113,7 +112,6 @@ export const mockCommittees = [
    { 
     id: 4, 
     name: 'ceval Engineering', 
-    
     chair: 'Dr. Faysal', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
     type: 'Technical', 
@@ -123,7 +121,6 @@ export const mockCommittees = [
    { 
     id: 5, 
     name: 'Honar ', 
-    
     chair: 'Dr. Sahel', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
     type: 'Technical', 
@@ -133,7 +130,6 @@ export const mockCommittees = [
   { 
     id: 6, 
     name: 'Honar ', 
-  
     chair: 'Dr. Sahel', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
     type: 'Technical', 
@@ -143,7 +139,6 @@ export const mockCommittees = [
   { 
     id: 7, 
     name: 'Honar ', 
-  
     chair: 'Dr. Sahel', 
     members: [{ id: 1, name: 'Dr. Ahmad Wali' }], 
     type: 'Technical', 
@@ -199,4 +194,98 @@ export const mockCommittees = [
     expertise: ['AI', 'Cloud', 'Security'] 
   }
 
+
+
+];
+
+
+
+export const mockInnovations = [
+  {
+    id: 101,
+    title: "Solar Water Purifier",
+    description: "An intelligent device for purifying water in remote areas that operates with solar energy and has very low maintenance costs.",
+    author: "Sayedagha Hotak",
+    status: "Unassigned", 
+    date: "2026-05-12",
+    category: "Technical"
+  },
+  {
+    id: 102,
+    title: "Health Tracking Application",
+    description: "A system for monitoring the nutritional and physical health status of university students and providing health recommendations.",
+    author: "Mariam Sadiq ",
+    status: "Assigned", 
+    committeeId: 1, 
+    committeeName: "Technical Review Committee",
+    date: "2026-05-10",
+    category: "Health"
+  },
+  {
+    id: 103,
+    title: "Smart Librarian Robot",
+    description: "This robot, utilizing artificial intelligence, can move books within library shelves and assist patrons.",
+    author: "ADRIS RAHMANI",
+    status: "Unassigned",
+    date: "2026-05-08",
+    category: "Technical"
+  },
+  {
+    id: 104,
+    title: "Solar Water Purifier",
+    description: "An intelligent device for purifying water in remote areas that operates with solar energy and has very low maintenance costs.",
+    author: "Sayedagha Hotak",
+    status: "Unassigned", 
+    date: "2026-05-12",
+    category: "Technical"
+  },
+  {
+    id: 105,
+    title: "Health Tracking Application",
+    description: "A system for monitoring the nutritional and physical health status of university students and providing health recommendations.",
+    author: "Mariam Sadiq ",
+    status: "Assigned", 
+    committeeId: 1, 
+    committeeName: "Technical Review Committee",
+    date: "2026-05-10",
+    category: "Health"
+  },
+  {
+    id: 106,
+    title: "Smart Librarian Robot",
+    description: "This robot, utilizing artificial intelligence, can move books within library shelves and assist patrons.",
+    author: "ADRIS RAHMANI",
+    status: "Unassigned",
+    date: "2026-05-08",
+    category: "Technical"
+  },
+  {
+    id: 107,
+    title: "Solar Water Purifier",
+    description: "An intelligent device for purifying water in remote areas that operates with solar energy and has very low maintenance costs.",
+    author: "Sayedagha Hotak",
+    status: "Unassigned", 
+    date: "2026-05-12",
+    category: "Technical"
+  },
+  {
+    id: 108,
+    title: "Health Tracking Application",
+    description: "A system for monitoring the nutritional and physical health status of university students and providing health recommendations.",
+    author: "Mariam Sadiq ",
+    status: "Assigned", 
+    committeeId: 1, 
+    committeeName: "Technical Review Committee",
+    date: "2026-05-10",
+    category: "Health"
+  },
+  {
+    id: 109,
+    title: "Smart Librarian Robot",
+    description: "This robot, utilizing artificial intelligence, can move books within library shelves and assist patrons.",
+    author: "ADRIS RAHMANI",
+    status: "Unassigned",
+    date: "2026-05-08",
+    category: "Technical"
+  }
 ];
