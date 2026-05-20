@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { loginUser } from '../data/mockUsers'; // اگر پوشه data کنار پوشه login است
+// import { loginUser } from '../data/mockUsers'; // اگر پوشه data کنار پوشه login است
 import InputField from '../components/InputField'; 
 import Button from '../components/Button'; 
 import './LoginPage.css';
 import image from '../../assets/image2.jpg'; // فرض بر این است که assets خارج از components است
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = ({ onLoginSuccess, onForgotPassword }) => {
+const LoginPage = ({ onLoginSuccess }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // نام اصلاح شد تا بتوانی در زمان لودینگ از آن استفاده کنی
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef(null);
 
@@ -20,25 +23,52 @@ const LoginPage = ({ onLoginSuccess, onForgotPassword }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-
-  setLoading(true);
-
-  // شبیه‌سازی انتظار برای سرور (مثل کد قبلی خودت)
-  setTimeout(() => {
-    // استفاده از تابعی که در mockData ساختیم
-    const user = loginUser(formData.email, formData.password);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    if (user) {
-      onLoginSuccess?.(user); // ورود موفقیت‌آمیز
-    } else {
-      setErrors({ general: 'ایمیل یا رمز عبور اشتباه است!' });
+    // اول اعتبارسنجی فرم خودت اجرا شود
+    if (!validateForm()) return;
+
+    setLoading(true); // فعال کردن حالت لودینگ فرم خودت
+
+    try {
+      const loginData = {
+        email: formData.email,
+        password: formData.password,
+        username: formData.email 
+      };
+
+      const response = await axios.post('http://localhost:8080/api/v1.0/auth/login', loginData);
+      
+      const token = response.data.token;
+      const rolesReceived = response.data.roles || response.data.authorities || [];
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('userRoles', JSON.stringify(rolesReceived));
+
+      alert("لاگین موفقیت‌آمیز بود!");
+
+      // اجرای تابع موفقیت فرم خودت اگر وجود داشته باشد
+      onLoginSuccess?.(response.data);
+
+      const isAdmin = rolesReceived.some(role => {
+        const roleName = typeof role === 'object' ? role.authority : role;
+        return roleName === 'ADMIN' || roleName === 'ROLE_ADMIN';
+      });
+
+      if (isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/user-dashboard'); 
+      }
+
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrors({ general: error.response?.data?.message || "email or password is incorrect" });
+    } finally {
+      setLoading(false); // غیرفعال کردن لودینگ در هر صورت
     }
-    setLoading(false);
-  }, 1000);
-};
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -98,8 +128,9 @@ const handleSubmit = async (e) => {
 
             <div className="forgot-password">
               <Button 
-                onClick={() => onForgotPassword?.(formData.email)}
-                disabled={!formData.email || loading}
+                type="button"
+                onClick={() => navigate('/forgot-password')} // کاربر را می‌فرستد به صفحه فراموشی رمز
+                disabled={loading}
               >
                 Forgot Password?
               </Button>

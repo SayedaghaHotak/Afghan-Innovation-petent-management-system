@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login/LoginPage';
 import SignupPage from './pages/SignUp/SignupPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ForgotPassword from './pages/forgotPassword/ForgotPassword';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -34,6 +35,8 @@ function App() {
             </div>
           ) : ( <Navigate to="/login" /> )
       } />
+
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }
