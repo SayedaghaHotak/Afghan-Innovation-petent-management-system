@@ -1,0 +1,250 @@
+/* src/pages/SubmitIdea.css */
+
+.submit-idea-container {
+    width: 100%;
+    /* چسبیدن کامل به لایه‌های لی‌اوت اصلی بدون پدینگ اضافی راست و بالا */
+    padding: 0px 0px 40px 0px; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+}
+
+/* هدر اصلی فورم */
+.form-header-card {
+    padding: 12px 0;
+}
+
+.form-header-card h2 {
+    color: var(--text-main);
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.form-header-card p {
+    color: var(--text-main);
+    opacity: 0.7;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ساختار کارت‌های تفکیک‌کننده بخش‌های فورم */
+.form-section-card {
+    background-color: var(--stat-card-bg); /* استفاده از وریبل کارت شما */
+    border: 1px solid var(--border-color); /* استفاده از وریبل بوردر شما */
+    border-radius: 10px;
+    padding: 24px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 4px;
+}
+
+.section-number {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.section-title h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.modern-idea-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-grid-two-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.modern-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modern-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    opacity: 0.8;
+}
+
+/* کانتینر آیکون‌دار اینپوت‌ها */
+.input-with-icon, .textarea-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-main);
+    opacity: 0.5;
+    font-size: 14px;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.textarea-icon {
+    top: 14px;
+}
+
+/* ⚡ فیکس بنیادی ورودی‌ها: استفاده کاملاً داینامیک از وریبل‌های شما برای لایت‌مود و دارک‌مود */
+.input-with-icon input,
+.input-with-icon select,
+.textarea-with-icon textarea {
+    width: 100%;
+    padding: 12px 12px 12px 40px; 
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main) !important; /* ست کردن پس‌زمینه بر اساس وریبل دیتاتم شما */
+    color: var(--text-main) !important; /* ست کردن رنگ متن بر اساس وریبل دیتاتم شما */
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* فیکس حالت فوکوس بدون تغییر رنگ ناگهانی پس‌زمینه */
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.textarea-with-icon textarea:focus {
+    border-color: var(--accent-color) !important; /* استفاده از رنگ طلایی آپشنال شما زمان فوکوس */
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2) !important;
+    background-color: var(--bg-main) !important;
+}
+
+/* هماهنگ‌سازی آپشن‌های سلکت باکس با داتا تم پروژه */
+select option {
+    background-color: var(--stat-card-bg);
+    color: var(--text-main);
+}
+
+/* تغییر رنگ پلیس‌هولدرها بر اساس تم جاری */
+.input-with-icon input::placeholder,
+.textarea-with-icon textarea::placeholder {
+    color: var(--text-main);
+    opacity: 0.4;
+}
+
+/* دراپ زون آپلود فایل متناسب با وریبل‌های شما */
+.modern-upload-dropzone {
+    width: 100%;
+}
+
+.modern-upload-dropzone input[type="file"] {
+    display: none;
+}
+
+.dropzone-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    border: 2px dashed var(--border-color);
+    background-color: var(--bg-main);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropzone-label:hover {
+    border-color: var(--accent-color);
+}
+
+.upload-cloud-icon {
+    font-size: 36px;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+}
+
+.upload-main-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.upload-sub-text {
+    font-size: 12px;
+    color: var(--text-main);
+    opacity: 0.6;
+}
+
+/* ⚡ تغییر بنیادی دوم: قرار گرفتن دکمه ثبت دقیقاً در وسط صفحه (Center) */
+.form-actions {
+    display: flex;
+    justify-content: center; /* فیکس در مرکز صفحه */
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.modern-submit-btn {
+   background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* استفاده از رنگ طلایی برندینگ شما */
+  background-color: var(--progress-bg);
+    color: #ffffff;
+    border: none;
+    padding: 14px 40px; /* عریض‌تر کردن دکمه برای ظاهر زیباتر در وسط */
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.modern-submit-btn:hover {
+    filter: brightness(1.1); /* افکت لایت‌تر شدن روی رنگ طلایی شما هنگام هاور */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+.modern-submit-btn:disabled {
+    background-color: var(--border-color);
+    color: var(--text-main);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* آلرت‌ها */
+.alert {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }

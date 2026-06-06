@@ -1,0 +1,290 @@
+/* src/pages/UserOverview.css */
+
+.user-overview-container {
+    width: 100%;
+    /* پدینگ بالا روی صفر فیکس است تا کاردها کاملاً به ناوبار بچسبند */
+    padding: 0px 24px 24px 24px; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* کاهش فاصله بین بخش‌ها برای بالا آمدن کل دیتا */
+    overflow-y: auto; 
+    height: 100%;
+}
+
+/* 🟢 اصلاح اساسی: قفل کردن هر ۴ کارد در یک قطار واحد و کشیدن محتوا به بالا */
+.cards-full-width-grid {
+    display: grid;
+    /* تنظیم روی دقیقاً ۴ ستون هم‌اندازه در یک ردیف بدون شکستن به خط بعد */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 16px; /* بهینه‌سازی فاصله بین کاردها جهت جا شدن استاندارد */
+    width: 100%;
+    margin-top: 0px; 
+    margin-bottom: 5px; /* کاهش فاصله پایینی برای بالا آمدن سریع‌تر جدول */
+}
+
+/* تنظیمات داخلی برای کاردهای غول‌پیکر و خوانا در یک ردیف */
+.cards-full-width-grid > * {
+    min-height: 115px; /* بهینه‌سازی جزئی ارتفاع کاردها برای تناسب در یک ردیف */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* واکنش‌گرایی منعطف: فقط در موبایل‌ها و تبلت‌های خیلی کوچک کاردها زیر هم می‌روند */
+@media (max-width: 768px) {
+    .cards-full-width-grid {
+        grid-template-columns: repeat(2, 1fr); /* در تبلت دو به دو */
+    }
+}
+@media (max-width: 480px) {
+    .cards-full-width-grid {
+        grid-template-columns: 1fr; /* در موبایل زیر هم */
+    }
+}
+
+/* کانتینر جدول تمام عرض (اتوماتیک به بالا کشیده شده) */
+.table-full-width-container {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 5px; /* کاهش مارجین اضافی برای بالا کشیدن هاب معلومات */
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.error-message {
+    color: #ef4444;
+    background-color: #fee2e2;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 0;
+}
+
+.loading-message {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ================================================================= */
+/* ✨ هاب تمام‌صفحه معلومات و فرم تماس (کاملاً تراز و بالا آمده) ✨ */
+/* ================================================================= */
+
+.aims-fullwidth-forum-hub {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    padding: 35px;
+    box-sizing: border-box;
+    margin-top: 5px; /* چسبیدن شیک به بخش بالایی */
+    border: 1px solid #f1f5f9;
+    margin-bottom: 20px; 
+}
+
+/* ساختار دو ستونه داخلی */
+.forum-inner-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 40px;
+}
+
+@media (max-width: 1024px) {
+    .forum-inner-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+.forum-info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.forum-block h3 {
+    font-size: 19px;
+    color: #0f172a;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.block-icon {
+    color: #3b82f6;
+    font-size: 22px;
+}
+
+.forum-block p {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+    margin: 0 0 10px 0;
+    text-align: justify;
+}
+
+.contact-vector-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.vector-icon {
+    color: #3b82f6;
+    font-size: 16px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.forum-social-block {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}
+
+.forum-social-block h4 {
+    font-size: 15px;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+}
+
+.social-links-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.social-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 18px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.social-icon-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    filter: brightness(1.1);
+}
+
+.social-icon-btn.fb { background-color: #1877f2; }
+.social-icon-btn.wa { background-color: #25d366; }
+.social-icon-btn.tg { background-color: #0088cc; }
+.social-icon-btn.ln { background-color: #0077b5; }
+
+.forum-form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-interactive-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6);
+}
+
+.contact-interactive-card h3 {
+    font-size: 19px;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+.contact-interactive-card p {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.interactive-hub-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-input-group label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #475569;
+}
+
+.form-input-group input,
+.form-input-group select,
+.form-input-group textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 13.5px;
+    background: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.form-input-group input:focus,
+.form-input-group select:focus,
+.form-input-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.12);
+}
+
+.form-input-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+.form-submit-dispatch-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 13px;
+    font-size: 14.5px;
+    font-weight: 500;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    margin-top: 6px;
+}
+
+.form-submit-dispatch-btn:hover {
+    background: #2563eb;
+}

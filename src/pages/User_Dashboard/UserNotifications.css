@@ -1,0 +1,344 @@
+/* src/pages/UserNotifications.css */
+
+.notif-workspace-container {
+    width: 100%;
+    padding: 0px 0px 40px 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.notif-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.headline-text-block h2 {
+    color: var(--text-main);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ambient-bell-glow {
+    color: var(--accent-color);
+}
+
+.headline-text-block p {
+    color: var(--text-main);
+    opacity: 0.65;
+    font-size: 14px;
+    margin: 0;
+}
+
+.batch-processing-btn {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.batch-processing-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Horizontal Card Row Architecture System */
+.notifications-table-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.notif-horizontal-row {
+    background-color: var(--stat-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    gap: 16px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.notif-horizontal-row:hover {
+    background-color: var(--bg-main);
+    transform: translateY(-1px);
+}
+
+.notif-horizontal-row.unread-state {
+    border-color: var(--accent-color);
+    background-color: rgba(255, 193, 7, 0.01);
+}
+
+/* Unread Active State indicators */
+.unread-dot-indicator {
+    width: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pulse-dot {
+    color: var(--accent-color);
+    font-size: 8px;
+    animation: alertPulse 2s infinite ease-in-out;
+}
+
+@keyframes alertPulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+.notif-icon-badge-box {
+    display: flex;
+    align-items: center;
+}
+
+.badge-shape {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.badge-shape.positive { background-color: rgba(16, 185, 129, 0.12); color: #10b981; }
+.badge-shape.negative { background-color: rgba(239, 68, 68, 0.12); color: #ef4444; }
+
+.notif-message-preview-cell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.main-message-string-truncate {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unread-state .main-message-string-truncate {
+    font-weight: 700;
+}
+
+.notif-timestamp-tag {
+    font-size: 11px;
+    color: var(--text-main);
+    opacity: 0.45;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notif-row-actions-cell {
+    display: flex;
+    align-items: center;
+}
+
+.notif-trash-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    opacity: 0.35;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notif-trash-action-btn:hover {
+    color: #ef4444;
+    opacity: 1;
+    background-color: rgba(239, 68, 68, 0.08);
+}
+
+/* 2. Detailed Target Inspection Center Overlay Modal */
+.modal-fixed-overlay-frame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-layout-box {
+    background-color: var(--stat-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header-strip h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.modal-close-icon-trigger {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.modal-close-icon-trigger:hover { opacity: 1; }
+
+.modal-scrollable-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.metadata-log-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metadata-log-card.borderless {
+    background-color: var(--bg-main);
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.meta-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+    opacity: 0.4;
+}
+
+.meta-value-id {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-family: monospace;
+}
+
+.meta-message-block-text {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-main);
+}
+
+.status-pill-indicator {
+    align-self: flex-start;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.status-pill-indicator.approved { background-color: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-pill-indicator.rejected { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.status-pill-indicator.pending { background-color: rgba(255, 193, 7, 0.15); color: var(--accent-color); }
+
+.modal-footer-action-row {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.modal-dismiss-btn {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-dismiss-btn:hover {
+    border-color: var(--text-main);
+}
+
+/* Fallback Screens styling */
+.empty-inbox-fallback {
+    background-color: var(--stat-card-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 460px;
+    margin: 40px auto;
+}
+
+.fallback-vector-graphic { font-size: 44px; opacity: 0.15; color: var(--text-main); margin-bottom: 12px; }
+.empty-inbox-fallback h3 { margin: 0 0 4px 0; color: var(--text-main); }
+.empty-inbox-fallback p { margin: 0; font-size: 13px; color: var(--text-main); opacity: 0.6; line-height: 1.5; }
+.workspace-error-banner { padding: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; border-radius: 6px; font-size: 13px; }
+.workspace-loading { text-align: center; color: var(--text-main); opacity: 0.6; padding: 40px; font-weight: 600; font-size: 14px; }

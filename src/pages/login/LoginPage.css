@@ -1,33 +1,37 @@
+/* src/pages/login/LoginPage.css */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-s
 
 .login-container {
-  height: 100vh; /* تغییر از min-height به height ثابت برای جلوگیری از اسکرول */
+  height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: row; /* اطمینان از اینکه در یک خط هستند */
+  flex-direction: row; 
   background: #f8fafc;
   font-family: system-ui, sans-serif;
-  overflow: hidden; /* جلوگیری از بیجا شدن المنت‌ها */
+  overflow: hidden; 
 }
 
+/* ⬅️ سمت چپ: فرم دقیقا در ۵۰ درصد فضای چپ تراز می‌شود */
 .login-left {
-  flex: 1; /* این بخش ۵۰ درصد فضا را می‌گیرد */
+  flex: 1; 
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
   background: #ffffff;
+  height: 100vh;
 }
 
 .login-form-card {
   background: #fff;
   padding: 4rem;
   border-radius: 16px;
-  box-shadow: 0 5px 40px rgba(48, 46, 46, 0.815);
+  box-shadow: 0 5px 40px rgba(48, 46, 46, 0.15); /* تعدیل سایه برای شیک‌تر شدن دیزاین */
   width: 100%;
   max-width: 450px;
   border: 1px solid #e5e7eb;
@@ -57,7 +61,7 @@ s
 
 .input-group input {
   width: 100%;
-  padding: 18px 50px 18px 20px; /* ✅ فضای icon راست */
+  padding: 18px 50px 18px 20px; 
   border: 2px solid #d1d5db;
   border-radius: 10px;
   font-size: 16px;
@@ -70,7 +74,7 @@ s
   outline: none;
   border-color: #3b82f6;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .input-group input.error {
@@ -80,7 +84,7 @@ s
 
 .password-toggle {
   position: absolute;
-  right: 16px;  /* ✅ همیشه راست */
+  right: 16px;  
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -111,7 +115,7 @@ s
 }
 
 .login-btn:hover:not(:disabled) {
-  box-shadow: 0 8px 25px rgba(59,130,246,0.3);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
 .login-btn:disabled {
@@ -119,9 +123,17 @@ s
   cursor: not-allowed;
 }
 
+/* 🔗 استایل بخش لینک‌های فوتر فرم */
+.login-footer-links {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .forgot-password {
   text-align: center;
-  margin-top: 1.5rem;
 }
 
 .forgot-password button {
@@ -130,12 +142,32 @@ s
   color: #3b82f6;
   font-size: 14px;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 4px 12px;
   border-radius: 6px;
+  transition: background 0.2s ease;
 }
 
 .forgot-password button:hover {
   background: #eff6ff;
+}
+
+/* متن پرامپت ثبت نام جدید */
+.signup-prompt-text {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.signup-prompt-text span {
+  color: #10b981;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.signup-prompt-text span:hover {
+  color: #059669;
 }
 
 .error-message {
@@ -148,23 +180,24 @@ s
   font-size: 14px;
 }
 
-/* ✅ فقط عکس تمام صفحه راست */
+/* ➡️ سمت راست: فیکس شدن کامل عکس در ۵۰ درصد سمت راست بدون سرریز */
 .login-right {
-  flex: 1; /* این بخش ۵۰ درصد فضا را می‌گیرد */
-  display: block; /* تغییر از relative به block برای تست */
+  flex: 1; 
+  display: block; 
   height: 100vh;
+  overflow: hidden;
+}
+
+.image-right {
+  height: 100%;
+  width: 100%;
 }
 
 .login-right img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  
-
-}
-.image-right{
-  height: 100%;
-  width: 100%;
+  object-fit: cover; 
+  display: block;
 }
 
 /* Responsive */
@@ -177,4 +210,18 @@ s
     margin: 1rem;
     padding: 2.5rem 2rem;
   }
+}
+
+
+/* انمیشن عکس  */
+/* این دو بخش را به انتهای فایل LoginPage.css اضافه کن */
+
+.animated-login-img {
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.03); }
 }

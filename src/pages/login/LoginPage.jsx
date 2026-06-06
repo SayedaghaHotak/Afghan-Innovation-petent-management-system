@@ -1,9 +1,9 @@
+// src/pages/login/LoginPage.jsx
 import React, { useState, useRef, useEffect } from 'react';
-// import { loginUser } from '../data/mockUsers'; // اگر پوشه data کنار پوشه login است
 import InputField from '../components/InputField'; 
 import Button from '../components/Button'; 
 import './LoginPage.css';
-import image from '../../assets/image2.jpg'; // فرض بر این است که assets خارج از components است
+import image from '../../assets/image2.jpg'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ const LoginPage = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // نام اصلاح شد تا بتوانی در زمان لودینگ از آن استفاده کنی
+  const [loading, setLoading] = useState(false); 
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef(null);
 
@@ -26,10 +26,9 @@ const LoginPage = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // اول اعتبارسنجی فرم خودت اجرا شود
     if (!validateForm()) return;
 
-    setLoading(true); // فعال کردن حالت لودینگ فرم خودت
+    setLoading(true); 
 
     try {
       const loginData = {
@@ -38,35 +37,51 @@ const LoginPage = ({ onLoginSuccess }) => {
         username: formData.email 
       };
 
-      const response = await axios.post('http://localhost:8080/api/v1.0/auth/login', loginData);
+      const response = await axios.post('http://localhost:8081/api/v1.0/auth/login', loginData);
       
-      const token = response.data.token;
+      let token = response.data.token;
+      if (typeof token === 'object' && token !== null) {
+        token = token.token || Object.values(token)[0];
+      }
+      if (Array.isArray(token)) {
+        token = token[0];
+      }
+
+      if (!token) {
+        throw new Error("Token not found in response");
+      }
+
       const rolesReceived = response.data.roles || response.data.authorities || [];
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('userRoles', JSON.stringify(rolesReceived));
+      sessionStorage.setItem('token', token.trim());
+      sessionStorage.setItem('userRoles', JSON.stringify(rolesReceived));
+      
+      if (response.data.user || response.data.username) {
+        sessionStorage.setItem('user', JSON.stringify(response.data.user || { email: response.data.username }));
+      }
 
-      alert("لاگین موفقیت‌آمیز بود!");
-
-      // اجرای تابع موفقیت فرم خودت اگر وجود داشته باشد
       onLoginSuccess?.(response.data);
 
-      const isAdmin = rolesReceived.some(role => {
-        const roleName = typeof role === 'object' ? role.authority : role;
-        return roleName === 'ADMIN' || roleName === 'ROLE_ADMIN';
+      const plainRoles = rolesReceived.map(role => {
+        return typeof role === 'object' ? role.authority : role;
       });
+
+      const isAdmin = plainRoles.includes('ADMIN') || plainRoles.includes('ROLE_ADMIN');
+      const isReviewer = plainRoles.includes('REVIEWER') || plainRoles.includes('ROLE_REVIEWER');
 
       if (isAdmin) {
         navigate('/admin');
+      } else if (isReviewer) {
+        navigate('/committee_dashboard/home'); 
       } else {
         navigate('/user-dashboard'); 
       }
 
     } catch (error) {
       console.error("Error during login:", error);
-      setErrors({ general: error.response?.data?.message || "email or password is incorrect" });
+      setErrors({ general: error.response?.data?.message || "Email or password is incorrect" });
     } finally {
-      setLoading(false); // غیرفعال کردن لودینگ در هر صورت
+      setLoading(false); 
     }
   };
 
@@ -81,6 +96,8 @@ const LoginPage = ({ onLoginSuccess }) => {
 
   return (
     <div className="login-container">
+      
+      {/* سمت چپ: بخش لاگین فرم */}
       <div className="login-left">
         <div className="login-form-card">
           <div className="login-header">
@@ -126,24 +143,37 @@ const LoginPage = ({ onLoginSuccess }) => {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
 
-            <div className="forgot-password">
-              <Button 
-                type="button"
-                onClick={() => navigate('/forgot-password')} // کاربر را می‌فرستد به صفحه فراموشی رمز
-                disabled={loading}
-              >
-                Forgot Password?
-              </Button>
+            {/* بخش لینک‌های پایینی */}
+            <div className="login-footer-links">
+              <div className="forgot-password">
+                <Button 
+                  type="button"
+                  onClick={() => navigate('/forgot-password')} 
+                  disabled={loading}
+                >
+                  Forgot Password?
+                </Button>
+              </div>
+
+              <div className="signup-prompt-text">
+                Don't have an account?{' '}
+                <span onClick={() => !loading && navigate('/signup')}>
+                  Create Account / Sign Up
+                </span>
+              </div>
             </div>
+
           </form>
         </div>
       </div>
 
+      {/* سمت راست: بخش تصویر همراه با کلاسی که انیمیشن را فعال می‌کند */}
       <div className="login-right">
-        <div className='image-right' style={{height : '100%'}}>
-          <img src={image} alt="innovation" />
+        <div className="image-right">
+          <img src={image} alt="innovation" className="animated-login-img" />
         </div>
       </div>
+
     </div>
   );
 };

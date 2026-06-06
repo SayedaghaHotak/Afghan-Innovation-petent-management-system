@@ -1,8 +1,10 @@
+/* src/pages/SignUp/SignupPage.css */
+
 .signup-wrapper {
   display: flex;
   min-height: 100vh;
   background: #ffffff;
-/* قطعاً اسکرول را حذف می‌کند */
+  /* قطعاً اسکرول را حذف می‌کند */
   overflow: hidden; 
 }
 
@@ -84,6 +86,7 @@
   font-size: 0.9rem;
   font-weight: 600;
 }
+
 .footer-links {
   margin-top: 15px;
   text-align: center;
@@ -124,15 +127,7 @@
 }
 
 @keyframes float {
-
-  /* حالت 1 اصلی یی انمیشن که پیش فرض است  */
-  /* 0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); } */
-/* حالت 2 اپشنل اګر بخواهم تغیر شود  */
+  /* حالت ۲ آپشنل شما که فعال است */
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-15px) scale(1.05); }
-/*  حالت ۳ اګر انتخاب می کنی  */
-/* 0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); } */
-
 }

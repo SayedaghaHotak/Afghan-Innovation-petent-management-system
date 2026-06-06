@@ -1,0 +1,316 @@
+/* src/pages/ProfileSettings.css */
+
+.profile-settings-workspace {
+    width: 100%;
+    padding: 0px 0px 40px 0px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.profile-view-title h2 {
+    color: var(--text-main);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.profile-loading-fallback {
+    color: var(--text-main);
+    font-size: 14px;
+    opacity: 0.7;
+    padding: 40px;
+    text-align: center;
+}
+
+/* ۱. تغییر رنگ پنل بالا به آبی اختصاصی پروژه شما */
+.identity-banner-card.blue-theme {
+    background-color: #1e3a8a; /* رنگ آبی مسلکی و یکدست با داشبورد شما */
+    border-radius: 12px;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+}
+
+.banner-left-identity {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-avatar-wrapper {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 3px solid #ffffff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder-icon {
+    font-size: 38px;
+    color: #ffffff;
+}
+
+.identity-text-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.identity-text-meta h3 {
+    margin: 0 0 2px 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* استایل سطر معلومات داینامیک در بنر (ایمیل، تلفن، تایم) */
+.banner-meta-row {
+    margin: 0;
+    font-size: 13.5px;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.banner-toggle-edit-btn {
+    background-color: #ffffff;
+    color: #1e3a8a;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.banner-toggle-edit-btn:hover {
+    transform: translateY(-1px);
+    background-color: #f8f9fa;
+}
+
+.banner-toggle-edit-btn.save-active {
+    background-color: #f59e0b; /* رنگ زرد/نارنجی ملایم برای دکمه ذخیره در تم آبی */
+    color: #ffffff;
+}
+
+/* ۲. چیدمان دو ستونه پایین */
+.settings-split-layout-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+    width: 100%;
+}
+
+.personal-information-panel {
+    background-color: var(--stat-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.personal-information-panel h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: var(--text-main);
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+.settings-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+.settings-fields-grid.single-column {
+    grid-template-columns: 1fr;
+}
+
+.input-data-field-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-data-field-box.full-width-cell {
+    grid-column: span 2;
+}
+
+.input-data-field-box label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-main);
+    opacity: 0.7;
+}
+
+.input-with-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.field-inner-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-main);
+    opacity: 0.35;
+    font-size: 14px;
+}
+
+/* دکمه چشم برای فیلدهای پسورد */
+.password-toggle-eye-btn {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    opacity: 0.5;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    padding: 4px;
+    transition: opacity 0.2s ease;
+}
+
+.password-toggle-eye-btn:hover {
+    opacity: 0.8;
+}
+
+.input-with-icon-wrapper input {
+    width: 100%;
+    padding: 11px 40px 11px 40px; /* اضافه شدن پدینگ راست برای آیکون چشم */
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-with-icon-wrapper input:focus:not(:disabled) {
+    border-color: #1e3a8a;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+.input-with-icon-wrapper input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.input-with-icon-wrapper.locked-state input {
+    background-color: rgba(0, 0, 0, 0.04);
+    border-style: dashed;
+}
+
+/* زون آپلود عکس */
+.drag-drop-upload-zone {
+    border: 2px dashed var(--border-color);
+    background-color: var(--bg-main);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.drag-drop-upload-zone:not(.disabled-zone):hover {
+    border-color: #1e3a8a;
+    background-color: rgba(30, 58, 138, 0.02);
+}
+
+.drag-drop-upload-zone.disabled-zone {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.upload-vector-cloud {
+    font-size: 28px;
+    color: #1e3a8a;
+    margin-bottom: 6px;
+}
+
+.drag-drop-upload-zone p span {
+    color: #1e3a8a;
+    font-weight: 700;
+}
+
+/* ۳. تغییر رنگ دکمه ثبت پسورد به آبی پروژه شما */
+.security-commit-btn.blue-theme {
+    margin-top: 8px;
+    background-color: #1e3a8a;
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.security-commit-btn.blue-theme:hover {
+    background-color: #1d4ed8;
+}
+
+/* توست الرت فرانت */
+.profile-status-toast {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+.profile-status-toast.success {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.profile-status-toast.error {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+@media (max-width: 1024px) {
+    .settings-split-layout-grid {
+        grid-template-columns: 1fr;
+    }
+}

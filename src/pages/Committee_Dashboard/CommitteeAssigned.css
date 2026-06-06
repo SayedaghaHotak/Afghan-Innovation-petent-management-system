@@ -1,0 +1,130 @@
+/* =========================================================================
+   CommitteeAssigned Styles (Ultra-Wide & Ultra-Compact Dashboard)
+   این استایل برای استفاده‌ی حداکثری از فضای مانیتور و چسبیدن به بالا عیار شده است.
+   ========================================================================= */
+
+/* کانتینر اصلی صفحه با عرض بیخی کامل و چسبیده به ناف‌بار */
+.committee-assigned-viewport {
+  padding: 0px 8px 8px 8px; /* پدینگ بالا صفر شد تا بیخی به ناف‌بار بچسبد */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* فاصله‌ی بین اجزا به حداقل رسید (فقط 8 پیکسل) */
+  width: 100% !important; 
+  max-width: 100% !important; /* پر کردن تمام صفحه از چپ تا راست */
+  box-sizing: border-box;
+  animation: fadeInAssigned 0.3s ease-in-out;
+}
+
+@keyframes fadeInAssigned {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 📑 بخش عنوان صفحه (کاملاً چسبیده به بالا بدون هیچ فضای ضایع شده) */
+.page-title-zone {
+  margin: 0;
+  padding: 4px 0 0 0; /* فقط یک پدینگ بیخی کم برای زیبایی */
+}
+
+.page-title-zone h2 {
+  font-size: 18px; /* جمع‌وجور و شیک */
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+  margin: 0 0 1px 0; /* حذف مارجین اضافی */
+  padding: 0;
+}
+
+.page-title-zone p {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+  padding: 0;
+}
+
+/* 🔍 کانتینر ابزارهای فیلتر و جستجوی لایو (عرض ۱۰۰٪ کامل) */
+.filter-action-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-navbar, #ffffff);
+  padding: 10px 14px; /* فشرده‌تر شدن پدینگ داخلی بار فیلتر */
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  min-width: 260px;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 7px 12px; /* فشرده و کم‌ارتفاع */
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-main, #f8fafc);
+  color: var(--text-main, #1e293b);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input-wrapper input:focus {
+  border-color: var(--primary-color, #3b82f6);
+}
+
+.filter-dropdown-wrapper select {
+  padding: 7px 12px; /* فشرده و کم‌ارتفاع */
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-main, #f8fafc);
+  color: var(--text-main, #1e293b);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* 📦 کانتینر دامنه‌ای جدول (مجبور کردن جدول خودت به پر کردن تمام عرض) */
+.assigned-table-view {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* 🚀 فیکس کردن نهایی ابعاد جدول کامپوننت خودت از چپ تا راست مانیتور */
+.assigned-table-view .table-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 12px !important; /* فشرده شدن پدینگ داخلی جدول */
+}
+
+/* استایل دکمهٔ ارزیابی (Review Idea) */
+.review-action-btn {
+  padding: 5px 10px; /* دکمه‌ی کوچک و شیک مچ با استایل فشرده */
+  background-color: var(--primary-color, #3b82f6);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.review-action-btn:hover {
+  opacity: 0.9;
+}
+
+/* ساحهٔ نمایش پیام دیتای خالی */
+.no-results-zone {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted, #94a3b8);
+  font-size: 13px;
+}

@@ -1,0 +1,61 @@
+.all-ideas-tab-viewport {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* بار اکشن‌ها (سرچ و فیلتر در یک خط فشرده) */
+.tab-action-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.search-box-wrapper, .filter-box-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box-wrapper { flex: 2; }
+.filter-box-wrapper { flex: 1; }
+
+.search-icon-inside, .filter-icon-inside {
+  position: absolute;
+  left: 10px;
+  color: var(--text-muted, #94a3b8);
+}
+
+.search-box-wrapper input, .filter-box-wrapper select {
+  width: 100%;
+  background-color: var(--bg-navbar, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  padding: 8px 12px 8px 34px;
+  border-radius: 6px;
+  color: var(--text-main, #1e293b);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-box-wrapper input:focus, .filter-box-wrapper select:focus {
+  border-color: #f97316; /* مچ شده با رنگ نارنجی کمیته شما */
+}
+
+/* کانتینر جدول */
+.ideas-table-container-card {
+  background: var(--bg-navbar, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 6px;
+  padding: 4px; /* فشرده ترین حالت */
+  overflow-x: auto;
+}
+
+.loading-spinner-zone {
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted, #64748b);
+}

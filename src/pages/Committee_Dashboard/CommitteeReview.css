@@ -1,0 +1,217 @@
+/* =========================================================================
+   CommitteeReview Styles (Ultra-Wide, Ultra-Compact & Theme-Aware)
+   ========================================================================= */
+
+.committee-review-viewport {
+  padding: 0px 8px 8px 8px; /* کاملاً چسبیده به ناف‌بار بالا */
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  animation: fadeInReview 0.3s ease-in-out;
+}
+
+@keyframes fadeInReview {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 📑 Page Header */
+.review-page-header {
+  margin: 0;
+  padding: 4px 0 0 0;
+}
+.review-page-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+  margin: 0 0 1px 0;
+}
+.review-page-header p {
+  font-size: 12px;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+}
+
+/* 🛠️ Split Layout */
+.review-split-layout {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* 📄 Left & Right Cards (Theme-Aware Implementation) */
+.patent-info-card, 
+.evaluation-form-card {
+  background: var(--bg-navbar, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 6px;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.patent-info-card { flex: 4; min-width: 320px; }
+.evaluation-form-card { flex: 6; min-width: 400px; }
+
+.patent-info-card h3, 
+.evaluation-form-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--primary-color, #3b82f6);
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  padding-bottom: 4px;
+}
+
+/* Form Groups & Typography */
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.info-group label {
+  font-size: 11px;
+  color: var(--text-muted, #94a3b8);
+  font-weight: 500;
+}
+.info-group p, 
+.info-group span {
+  font-size: 13px;
+  color: var(--text-main, #1e293b);
+  margin: 0;
+}
+
+.abstract-text {
+  background: var(--bg-main, #f8fafc);
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px !important;
+  line-height: 1.5;
+  color: var(--text-main, #334155) !important;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+/* لینک دانلود ظریف */
+.download-proposal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--primary-color, #3b82f6);
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.download-proposal-link:hover { text-decoration: underline; }
+
+/* سه فیلد نمره در یک خط کامپکت */
+.scoring-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.score-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.score-field label, 
+.feedback-textarea-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-main, #334155);
+}
+.score-field input {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-main, #f8fafc);
+  color: var(--text-main, #1e293b);
+  font-size: 13px;
+  outline: none;
+}
+.score-field input:focus { border-color: var(--primary-color, #3b82f6); }
+
+/* باکس متن فیدبک */
+.feedback-textarea-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.feedback-textarea-field textarea {
+  width: 100%;
+  height: 100px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--bg-main, #f8fafc);
+  color: var(--text-main, #1e293b);
+  font-size: 13px;
+  outline: none;
+  resize: none;
+}
+.feedback-textarea-field textarea:focus { border-color: var(--primary-color, #3b82f6); }
+
+/* =========================================================================
+   🚀 Luxury & Compact Action Buttons Panel
+   ========================================================================= */
+
+.verdict-buttons-container {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto; /* چسبیدن شیک به پایان کارت */
+}
+
+/* دکمه‌های ارزیابی فشرده، لوکس و ظریف */
+.btn-action {
+  flex: 1;
+  padding: 8px 12px !important; /* کوچک‌تر و فشرده‌تر شدن پدینگ */
+  font-size: 12px !important; /* سایز متناسب و شیک */
+  font-weight: 600 !important;
+  color: #ffffff !important; /* متن همیشه سفید برای وضوح بالا */
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+/* 🟢 Luxury Emerald Approve Button */
+.btn-approve {
+  background: #059669 !important; /* سبز زمردی لوکس و مات */
+}
+.btn-approve:hover {
+  background: #047857 !important;
+  box-shadow: 0 3px 8px rgba(5, 150, 105, 0.3);
+}
+
+/* 🔴 Luxury Crimson/Rose Reject Button */
+.btn-reject {
+  background: #e11d48 !important; /* سرخ رُز ملایم و بسیار لوکس */
+}
+.btn-reject:hover {
+  background: #be123c !important;
+  box-shadow: 0 3px 8px rgba(225, 29, 72, 0.3);
+}
+
+/* افکت زنده هنگام کلیک */
+.btn-action:active {
+  transform: scale(0.98);
+}
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

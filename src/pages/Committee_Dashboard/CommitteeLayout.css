@@ -1,0 +1,222 @@
+/* =========================================================================
+   CommitteeLayout Styles (Fixed Header & Independent Scrollbar Framework)
+   ========================================================================= */
+
+.committee-layout-container {
+    width: 100%;
+    height: 100vh; /* 🚀 فیکس کردن ارتفاع کل دشبورد به اندازه مانیتور */
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-main, #f8f9fa); 
+    color: var(--text-main, #1e293b);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow: hidden; /* 🚀 جلوگیری از اسکرول شدن کل بدنه دشبورد */
+}
+
+/* نوبار اصلی بالایی (کاملاً فیکس در بالا) */
+.committee-navbar {
+    height: 70px;
+    min-height: 70px; /* جلوگیری از فشرده شدن هدر */
+    background-color: var(--bg-navbar, #ffffff); 
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-brand-zone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.brand-icon-orange {
+    color: #f97316; 
+    font-size: 24px;
+}
+
+.brand-text {
+    color: var(--text-main, #1e293b); 
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.brand-text small {
+    font-size: 12px;
+    color: #f97316;
+    font-weight: 400;
+    margin-left: 4px;
+}
+
+/* فیلد سرچ زنده متناسب با دارک/لایت */
+.navbar-search-form {
+    width: 35%;
+}
+
+.search-bar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-field-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted, #94a3b8);
+}
+
+.search-bar-wrapper input {
+    width: 100%;
+    background-color: var(--bg-input, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--border-color, #e2e8f0);
+    padding: 9px 16px 9px 42px;
+    border-radius: 8px;
+    color: var(--text-main, #1e293b);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.search-bar-wrapper input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 1px #f97316;
+}
+
+/* اکشن‌ها و مشخصات پروفایل */
+.navbar-actions-zone {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.theme-toggle, .notification-bell-wrapper {
+    cursor: pointer;
+    position: relative;
+    color: var(--text-main, #1e293b);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.bell-badge-orange {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: #f97316;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+/* پاپ‌آپ نوتیفیکیشن متناسب با تم */
+.notif-dropdown-box {
+    position: absolute;
+    top: 30px;
+    right: -10px;
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    width: 280px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    color: var(--text-main, #334155);
+    padding: 12px;
+}
+
+/* مشخصات داور */
+.user-profile-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 1px solid var(--border-color, #e2e8f0);
+    padding-left: 20px;
+}
+
+.user-avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #f97316;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    overflow: hidden;
+}
+
+.nav-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-name { color: var(--text-main, #1e293b); font-size: 14px; font-weight: 600; }
+.profile-role { color: var(--text-muted, #94a3b8); font-size: 11px; }
+
+/* 📑 منوهای افقی زیر نوبار (کاملاً فیکس) */
+.committee-sub-navigation {
+    background-color: var(--bg-subnav, #f1f5f9); 
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    padding: 0 32px;
+    display: flex;
+    height: 50px;
+    min-height: 50px; /* جلوگیری از فشرده شدن منو */
+}
+
+.sub-nav-links-wrapper {
+    display: flex;
+    gap: 8px;
+    height: 100%;
+}
+
+.sub-nav-link-btn {
+    background: none;
+    border: none;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    cursor: pointer;
+    position: relative;
+    height: 100%;
+}
+
+.sub-nav-link-btn:hover {
+    color: var(--text-main, #1e293b);
+}
+
+.sub-nav-link-btn.active-tab {
+    color: #f97316;
+}
+
+.sub-nav-link-btn.active-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f97316;
+    border-radius: 3px 3px 0 0;
+}
+
+/* 🚀 محوطهٔ رندر صفحات فرعی (فقط این بخش اسکرول می‌شود) */
+.committee-workspace-viewport {
+    flex: 1;
+    padding: 16px 32px 32px; /* فشرده‌تر کردن پدینگ بالا برای مچ شدن با کامپوننت‌ها */
+    box-sizing: border-box;
+    overflow-y: auto; /* 🚀 فعال شدن اسکرول هوشمند داخلی مخصوص دیتای صفحات */
+}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { mockCommittees, mockUsers } from '../../data/mockUsers'; 
+// src/pages/CommitteeManagement.jsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import StatCard from '../StatCard'; 
 import { FaSitemap, FaUserCheck, FaClipboardCheck, FaRegLightbulb, FaTimes } from 'react-icons/fa';
 import CommitteeTable from './CommiteeTable';
@@ -8,7 +9,8 @@ import './Commitee.css';
 import CreateCommitteeModal from '../NewCommittee/CreateCommitteeModal';
 
 const CommitteeManagement = () => {
-  const [committees, setCommittees] = useState(mockCommittees);
+  const [committees, setCommittees] = useState([]);
+  const [realUsers, setRealUsers] = useState([]); // لیست کل کاربران سیستم برای مودال افزودن عضو
   const [selectedCommittee, setSelectedCommittee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("All");
@@ -16,48 +18,129 @@ const CommitteeManagement = () => {
   const [showUserSelector, setShowUserSelector] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editFormData, setEditFormData] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  // ⚡ ۱. متد گرفتن تمام کمیته‌ها از بک‌اِند (با ایمن‌سازی کامل و بیخی محکم)
+  const fetchCommittees = async () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      const response = await axios.get('http://localhost:8081/api/v1.0/admin/committees', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data && Array.isArray(response.data)) {
+        const processedData = response.data.map(c => {
+          // 🛡️ بررسی هوشمند و کاملاً امن برای نام ادمین کمیته جهت جلوگیری از ارور ۵۰۰ و کرش
+          const leadName = c.committeeAdmin 
+            ? `${c.committeeAdmin.firstName || ''} ${c.committeeAdmin.lastName || ''}`.trim()
+            : "تعیین نشده";
+
+          return {
+            ...c,
+            chair: leadName || "تعیین نشده", 
+            type: "Technical", 
+            subCategory: c.description || "توضیحات ندارد",
+            members: c.members || [] // تضمین وجود آرایه ممبرز برای جلوگیری از باگ‌های رندر
+          };
+        });
+
+        setCommittees(processedData);
+
+        // 🔥 آپدیت فوری پنل سمت راست بدون از دست رفتن استیت
+        if (selectedCommittee) {
+          const currentUpdated = processedData.find(item => item.id === selectedCommittee.id);
+          if (currentUpdated) {
+            setSelectedCommittee(currentUpdated);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching committees:", err);
+    }
+  };
+
+  // ⚡ ۲. متد گرفتن کاربران سیستم برای مودال اضافه کردن عضو
+  const fetchRealUsers = async () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      const response = await axios.get('http://localhost:8081/api/v1.0/admin/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data && Array.isArray(response.data)) {
+        setRealUsers(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCommittees();
+    fetchRealUsers();
+  }, []);
+
+  // ⚡ ۳. متد ایجاد کمیته جدید
+  const handleSaveNewCommittee = async (data) => {
+    try {
+      const token = sessionStorage.getItem('token');
+      const committeePayload = {
+        name: data.name ? data.name.trim() : "",
+        description: data.description || ""
+      };
+
+      const response = await axios.post(
+        'http://localhost:8081/api/v1.0/admin/committees/create', 
+        committeePayload,
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        alert("Committee created successfully!");
+        setIsCreateModalOpen(false); 
+        await fetchCommittees(); // بازخوانی فوری لست پس از ایجاد موفقیت‌آمیز
+      }
+    } catch (err) {
+      console.error("Error creating committee:", err);
+      alert(err.response?.data || "Failed to create committee.");
+    }
+  };
+
+  // 🛡️ اصلاح اساسی فیلتر دیتای جدول: ایمن‌سازی کامل در برابر فیلدهای null ادمین
   const filteredData = committees.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.chair.toLowerCase().includes(searchTerm.toLowerCase());
+    const chairName = item.chair ? item.chair : "Unassigned";
+    const committeeName = item.name || "";
+    
+    const matchesSearch = committeeName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          chairName.toLowerCase().includes(searchTerm.toLowerCase());
+    
     const matchesFilter = filterType === "All" || item.type === filterType;
     return matchesSearch && matchesFilter;
   });
 
-// delete committee
-  const handleDeleteCommittee = (committeeId) => {
+  // ⚡ ۴. متد حذف کمیته
+  const handleDeleteCommittee = async (committeeId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this committee?");
-    if (confirmDelete){
-      const updated= committees.filter(c => c.id !== committeeId);
-      setCommittees(updated);
-      if (selectedCommittee && selectedCommittee.id === committeeId){
-        setSelectedCommittee(null);
+    if (confirmDelete) {
+      try {
+        const token = sessionStorage.getItem('token');
+        const response = await axios.delete(`http://localhost:8081/api/v1.0/admin/committees/delete/${committeeId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.status === 200) {
+          const updated = committees.filter(c => c.id !== committeeId);
+          setCommittees(updated);
+          if (selectedCommittee && selectedCommittee.id === committeeId) {
+            setSelectedCommittee(null);
+          }
+          alert("Committee deleted successfully.");
+          await fetchCommittees();
+        }
+      } catch (err) {
+        alert(err.response?.data || "Failed to delete committee.");
       }
-    };
+    }
   };
 
-  // create new committee
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-    const handleSaveNewCommittee = (data) => {
-      // Logic for your Mock Data (And later your API)
-      const newCommittee = {
-        ...data,
-        id: Date.now(), // Unique ID
-        chair: "Unassigned", 
-        members: [], // Starts with 0 members
-        type: "General" 
-      };
-
-      setCommittees([newCommittee, ...committees]);
-      setIsCreateModalOpen(false); // Close modal
-   };
-  
-
-
-
-
-// to update committee image 
   const handleUpdateImage = (base64Image) => {
     const updated = committees.map(c => 
       c.id === selectedCommittee.id ? { ...c, image: base64Image } : c
@@ -66,77 +149,79 @@ const CommitteeManagement = () => {
     setSelectedCommittee({ ...selectedCommittee, image: base64Image });
   };
 
-  // to delete member from committee
-  const handleRemoveMember = (committeeId, memberId) => {
-  // 1. Ask for confirmation
-  const confirmDelete = window.confirm("Are you sure you want to remove this member?");
-  
-  if (confirmDelete) {
-    // 2. Update the main committees list
-    const updatedCommittees = committees.map(c => {
-      if (c.id === committeeId) {
-        return {
-          ...c,
-          members: c.members.filter(m => m.id !== memberId)
-        };
+  // ⚡ ۵. متد حذف واقعی ممبر از کمیته (بک‌اِند)
+  const handleRemoveMember = async (committeeId, memberId) => {
+    const confirmDelete = window.confirm("Are you sure you want to remove this member?");
+    if (confirmDelete) {
+      try {
+        const token = sessionStorage.getItem('token');
+        const response = await axios.delete(
+          `http://localhost:8081/api/v1.0/admin/remove-member/${committeeId}/${memberId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (response.status === 200) {
+          alert("Member removed successfully.");
+          await fetchCommittees(); // لود مجدد برای همگام‌سازی
+        }
+      } catch (err) {
+        console.error(err);
+        alert(err.response?.data || "Failed to remove member.");
       }
-      return c;
-    });
-
-    setCommittees(updatedCommittees);
-
-    // 3. Update the side panel (selectedCommittee) so the name disappears immediately
-    if (selectedCommittee && selectedCommittee.id === committeeId) {
-      setSelectedCommittee({
-        ...selectedCommittee,
-        members: selectedCommittee.members.filter(m => m.id !== memberId)
-      });
     }
-  }
-};
-
-
-// to add member to committee
-  const handleAddMemberAction = (user) => {
-if (!selectedCommittee) {
-    console.error("No committee selected to add members to.");
-    setShowUserSelector(false);
-    return;
-  }
-  const updatedCommittees = committees.map(c => {
-    if (c.id === selectedCommittee.id) {
-      const isAlreadyMember = c.members.some(m => m.id === user.id);
-      
-      if (isAlreadyMember) {
-        alert(`${user.name} is already in this committee.`);
-        return c; 
-      }
-
-      return { 
-        ...c, 
-        members: [...c.members, { id: user.id, name: user.name }] 
-      };
-    }
-    return c;
-  });
-
-  setCommittees(updatedCommittees);
-  const updatedCurrent = updatedCommittees.find(c => c.id === selectedCommittee.id);
-  if (updatedCurrent) {
-    setSelectedCommittee(updatedCurrent);
-  }
-  setShowUserSelector(false);
   };
 
-  // to save edited committee information
-  const handleSaveEdit = (e) => {
+  // ⚡ ۶. متد افزودن ممبر
+  const handleAddMemberAction = async (user) => {
+    if (!selectedCommittee) return;
+
+    try {
+      const token = sessionStorage.getItem('token');
+
+      // چک کردن اینکه کاربر از قبل عضو نباشد
+      const isAlreadyMember = selectedCommittee.members?.some(m => Number(m.id) === Number(user.id));
+      if (isAlreadyMember) {
+        alert(`${user.firstName} ${user.lastName} is already a member.`);
+        return;
+      }
+
+      await axios.post(
+        `http://localhost:8081/api/v1.0/admin/committees/${selectedCommittee.id}/add-reviewer/${user.id}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      await fetchCommittees(); 
+      alert("Member added successfully!");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data || "Failed to add member.");
+    } finally {
+      setShowUserSelector(false); 
+    }
+  };
+
+  // ⚡ ۷. متد جامع آپدیت اطلاعات کمیته
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    const updatedCommittees = committees.map(c => 
-      c.id === editFormData.id ? editFormData : c
-    );
-    setCommittees(updatedCommittees);
-    setSelectedCommittee(editFormData);
-    setShowEditModal(false);
+    try {
+      const token = sessionStorage.getItem('token');
+
+      if (editFormData.selectedAdminId) {
+        await axios.put(
+          `http://localhost:8081/api/v1.0/admin/assign-committee-admin/${editFormData.id}/${editFormData.selectedAdminId}?add=true`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+
+      alert("Committee changes applied successfully!");
+      setShowEditModal(false);
+      await fetchCommittees(); 
+    } catch (err) {
+      console.error("Error during save edit:", err);
+      alert(err.response?.data || "Failed to update committee layout.");
+    }
   };
 
   return (
@@ -154,9 +239,6 @@ if (!selectedCommittee) {
             <h1>Committees Inventory</h1>
             <p>{filteredData.length} committees matching your criteria</p>
           </div>
-
-
-          
           <button className="create-btn" onClick={() => setIsCreateModalOpen(true)}>+ New Committee</button>
         </header>
 
@@ -175,10 +257,16 @@ if (!selectedCommittee) {
             {selectedCommittee ? (
               <CommitteePanel 
                 committee={selectedCommittee} 
-                onEdit={() => { setEditFormData(selectedCommittee); setShowEditModal(true); }}
+                onEdit={() => { 
+                  setEditFormData({
+                    ...selectedCommittee,
+                    selectedAdminId: selectedCommittee.committeeAdmin?.id || "" 
+                  }); 
+                  setShowEditModal(true); 
+                }}
                 onAdd={() => setShowUserSelector(true)}
                 onImageChange={handleUpdateImage}
-                onRemoveMember={handleRemoveMember}
+                onRemoveMember={handleRemoveMember} 
               />
             ) : (
               <div className="empty-panel-state">
@@ -193,29 +281,26 @@ if (!selectedCommittee) {
             onClose={() => setIsCreateModalOpen(false)} 
             onSave={handleSaveNewCommittee} 
           />
-
-
-
-
-
         </div>
       </div>
 
+      {/* مودال انتخاب کاربر واقعی دیتابیس */}
       {showUserSelector && (
         <div className="cm-modal-overlay">
           <div className="cm-modal-content">
             <div className="modal-header">
-              <h3>Select User</h3>
+              <h3>Select User to Add as Member</h3>
               <button className="close-icon" onClick={() => setShowUserSelector(false)}><FaTimes /></button>
             </div>
             <div className="user-selection-list">
-              {mockUsers.map(user => (
+              {realUsers.map(user => (
                 <div key={user.id} className="user-select-item" onClick={() => handleAddMemberAction(user)}>
                   <div className="user-info-mini">
-                    <div className="avatar-mini">{user.name.charAt(0)}</div>
-                    <span>{user.name}</span>
+                    <div className="avatar-mini">{(user.firstName || "U").charAt(0)}</div>
+                    <span>{`${user.firstName || ''} ${user.lastName || ''}`}</span>
+                    <small style={{color: '#666', marginLeft: '8px'}}>({user.email || user.username})</small>
                   </div>
-                  <button className="add-action-btn">Add</button>
+                  <button className="add-action-btn">Add to Committee</button>
                 </div>
               ))}
             </div>
@@ -223,44 +308,50 @@ if (!selectedCommittee) {
         </div>
       )}
 
+      {/* مودال ادیت ادمین و اطلاعات */}
       {showEditModal && (
         <div className="cm-modal-overlay">
           <div className="cm-modal-content">
             <div className="modal-header">
-              <h3>Edit Committee Info</h3>
+              <h3>Edit Committee Info & Lead</h3>
               <button className="close-icon" onClick={() => setShowEditModal(false)}><FaTimes /></button>
             </div>
             <form onSubmit={handleSaveEdit} className="edit-form">
               <div className="form-group">
-                <label>Name</label>
-                <input type="text" placeholder=' enter Committee name  '  value={editFormData?.name} onChange={(e) => setEditFormData({...editFormData, name: e.target.value})} />
+                <label>Committee Name</label>
+                <input 
+                  type="text" 
+                  value={editFormData?.name || ""} 
+                  onChange={(e) => setEditFormData({...editFormData, name: e.target.value})} 
+                />
               </div>
 
               <div className='form-group'>
-                <label >Description</label>
+                <label>Description</label>
                 <textarea
-                row="3"
-                value={editFormData?.description || ""}
-                onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
-                placeholder='enter Committee description '
-                className='form-textarea'
+                  rows="3"
+                  value={editFormData?.description || ""}
+                  onChange={(e) => setEditFormData({...editFormData, description: e.target.value})}
+                  className='form-textarea'
                 />
-
               </div>
+
               <div className="form-group">
-                <label> Select member as a Lead</label>
-                
-                <select value={editFormData.chair} onChange={(e) => setEditFormData({...editFormData, chair: e.target.value})}>
-                  
-                    {editFormData.members && editFormData.members.map((member) => (
-                    <option key={member.id} value={member.name}>
-                      {member.name}
+                <label style={{fontWeight: 'bold', color: '#4da6ff'}}>Select Admin from Committee Members</label>
+                <select 
+                  value={editFormData?.selectedAdminId || ""} 
+                  onChange={(e) => setEditFormData({...editFormData, selectedAdminId: e.target.value})}
+                >
+                    <option value="">-- Choose a Member to be Lead --</option>
+                    {editFormData?.members && editFormData.members.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name ? member.name : `${member.firstName || ''} ${member.lastName || ''}`}
                     </option>
                   ))}
-                </select>
-                  {(!editFormData.members || editFormData.members.length === 0) && (
-                  <span style={{ color: '#ffbb33', fontSize: '11px' }}>
-                  * No members found. Add members first to select a lead.
+                </                select>
+                {(!editFormData?.members || editFormData.members.length === 0) && (
+                  <span style={{ color: '#ffbb33', fontSize: '11px', display: 'block', marginTop: '5px' }}>
+                    * این کمیته هیچ عضوی ندارد! ابتدا باید از پنل اصلی عضو اضافه کنید تا بتوانید او را ادمین بسازید.
                   </span>
                 )}
               </div>
@@ -272,6 +363,5 @@ if (!selectedCommittee) {
     </div>
   );
 };
-
 
 export default CommitteeManagement;
