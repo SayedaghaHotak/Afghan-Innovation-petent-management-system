@@ -13,12 +13,10 @@ const ProfileSettings = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  // وضعیت آشکارسازی پسوردها (آیکون چشم)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // دیتای پروفایل متصل به اینتیتی User فرید
   const [userProfile, setUserProfile] = useState({
     id: null,
     firstName: '',
@@ -27,10 +25,9 @@ const ProfileSettings = () => {
     phoneNumber: '',
     roles: [],
     profilePicturePath: null,
-    createdAt: null // برای نمایش تایم ایجاد حساب از بک‌اِند
+    createdAt: null 
   });
 
-  // وضعیت فیلدهای پسورد
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -39,12 +36,12 @@ const ProfileSettings = () => {
 
   const BASE_URL = 'http://localhost:8081/api/v1.0/users';
 
-  // لود دیتای زنده از بک‌اِند فرید
+  // لود دیتای زنده با استفاده از ساختار استاندارد لایو لوکال استوریج
   useEffect(() => {
     const fetchProfileData = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token'); // تغییر از sessionStorage به localStorage برای هماهنگی
         const response = await axios.get(`${BASE_URL}/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -69,14 +66,14 @@ const ProfileSettings = () => {
     setPasswordData(prev => ({ ...prev, [name]: value }));
   };
 
-  // ذخیره معلومات شخصی در بک‌اِند
+  // ذخیره اطلاعات شخصی کاربر
   const handleSaveChanges = async () => {
     if (isEditable) {
       setLoading(true);
       setMessage({ type: '', text: '' });
       
       try {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         const updatePayload = {
           firstName: userProfile.firstName,
           lastName: userProfile.lastName,
@@ -101,7 +98,7 @@ const ProfileSettings = () => {
     }
   };
 
-  // آپلود تصویر واقعی به سرور فرید
+  // آپلود عکس آواتار کاربر
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -113,7 +110,7 @@ const ProfileSettings = () => {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       const response = await axios.post(`${BASE_URL}/profile/picture`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -132,7 +129,7 @@ const ProfileSettings = () => {
     }
   };
 
-  // تغییر پسورد
+  // تغییر پسورد با فیدبک خطای دقیق بک‌اِند
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
@@ -141,8 +138,9 @@ const ProfileSettings = () => {
     }
 
     setLoading(true);
+    setMessage({ type: '', text: '' });
     try {
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token');
       await axios.put(`${BASE_URL}/profile/change-password`, {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
@@ -153,18 +151,14 @@ const ProfileSettings = () => {
       setMessage({ type: 'success', text: 'Password encrypted and updated successfully.' });
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      setMessage({ type: 'error', text: 'Failed to verify credential chain blocks.' });
+      console.error("Password update trace error:", err);
+      const errorMsg = err.response?.data?.message || 'Failed to verify credential chain blocks.';
+      setMessage({ type: 'error', text: errorMsg });
     } finally {
       setLoading(false);
     }
   };
 
-  const formatRoles = (rolesArray) => {
-    if (!rolesArray || rolesArray.length === 0) return 'Standard Account';
-    return rolesArray.map(role => role.replace('ROLE_', '')).join(', ');
-  };
-
-  // فرمت ساده برای نمایش تایم عضویت کاربر از بک‌اِند
   const formatJoinedDate = (dateString) => {
     if (!dateString) return 'Recent Timestamp';
     return new Date(dateString).toLocaleDateString();
@@ -190,7 +184,7 @@ const ProfileSettings = () => {
         </div>
       )}
 
-      {/* ۱. بنر بالایی: کاملاً داینامیک (از بک‌اِند) و رنگ آبی پروژه */}
+      {/* ۱. بنر بالایی هدر پروفایل */}
       <div className="identity-banner-card blue-theme">
         <div className="banner-left-identity">
           <div className="profile-avatar-wrapper">
@@ -217,10 +211,8 @@ const ProfileSettings = () => {
         </button>
       </div>
 
-      {/* ۲. چیدمان فیلدها و پنل پسورد */}
+      {/* ۲. فرم جزئیات و بخش امنیت */}
       <div className="settings-split-layout-grid">
-        
-        {/* بلوک اطلاعات شخصی */}
         <div className="personal-information-panel">
           <h3>Personal Information</h3>
           
@@ -265,7 +257,7 @@ const ProfileSettings = () => {
                   value={userProfile.phoneNumber || ''}
                   onChange={handleInputChange}
                   disabled={!isEditable} 
-                  placeholder="e.g. +93789558914"
+                  placeholder="e.g. +9378955891"
                 />
               </div>
             </div>
@@ -282,7 +274,6 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            {/* بخش آپلود تصویر */}
             <div className="input-data-field-box full-width-cell">
               <label>Profile Avatar Picture</label>
               <div className={`drag-drop-upload-zone ${!isEditable ? 'disabled-zone' : ''} ${imageUploading ? 'uploading' : ''}`}>
@@ -303,12 +294,11 @@ const ProfileSettings = () => {
           </div>
         </div>
 
-        {/* بلوک امنیت و پسورد با قابلیت چشم (آبی شده) */}
+        {/* بخش امنیت و رمز عبور */}
         <div className="personal-information-panel security-panel">
           <h3>Security & Passwords</h3>
           <form onSubmit={handleUpdatePassword} className="settings-fields-grid single-column">
             
-            {/* فیلد ۱: پسورد فعلی */}
             <div className="input-data-field-box">
               <label>Current Authentication Password</label>
               <div className="input-with-icon-wrapper">
@@ -331,7 +321,6 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            {/* فیلد ۲: پسورد جدید */}
             <div className="input-data-field-box">
               <label>New Root Password Target</label>
               <div className="input-with-icon-wrapper">
@@ -354,7 +343,6 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            {/* فیلد ۳: تایید پسورد */}
             <div className="input-data-field-box">
               <label>Confirm New Password Vector</label>
               <div className="input-with-icon-wrapper">

@@ -15,6 +15,12 @@ const LoginPage = ({ onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef(null);
 
+  // ⚡ رفع باگ دکمه بک: به محض ورود به صفحه لاگین، کل توکن‌های قبلی منقضی و پاکسازی می‌شوند
+  useEffect(() => {
+    sessionStorage.clear(); 
+    emailRef.current?.focus();
+  }, []);
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) newErrors.email = 'Email is required';
@@ -25,7 +31,6 @@ const LoginPage = ({ onLoginSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
 
     setLoading(true); 
@@ -53,6 +58,7 @@ const LoginPage = ({ onLoginSuccess }) => {
 
       const rolesReceived = response.data.roles || response.data.authorities || [];
 
+      // ذخیره ایمن دیتای جدید لاگین
       sessionStorage.setItem('token', token.trim());
       sessionStorage.setItem('userRoles', JSON.stringify(rolesReceived));
       
@@ -69,12 +75,13 @@ const LoginPage = ({ onLoginSuccess }) => {
       const isAdmin = plainRoles.includes('ADMIN') || plainRoles.includes('ROLE_ADMIN');
       const isReviewer = plainRoles.includes('REVIEWER') || plainRoles.includes('ROLE_REVIEWER');
 
+      // هدایت بلادرنگ با متد replace برای جلوگیری از ثبت هیستوری اشتباه در مرورگر
       if (isAdmin) {
-        navigate('/admin');
+        navigate('/admin', { replace: true });
       } else if (isReviewer) {
-        navigate('/committee_dashboard/home'); 
+        navigate('/committee_dashboard/home', { replace: true }); 
       } else {
-        navigate('/user-dashboard'); 
+        navigate('/user-dashboard', { replace: true }); 
       }
 
     } catch (error) {
@@ -90,13 +97,8 @@ const LoginPage = ({ onLoginSuccess }) => {
     if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: '' });
   };
 
-  useEffect(() => {
-    emailRef.current?.focus();
-  }, []);
-
   return (
     <div className="login-container">
-      
       {/* سمت چپ: بخش لاگین فرم */}
       <div className="login-left">
         <div className="login-form-card">
@@ -143,7 +145,6 @@ const LoginPage = ({ onLoginSuccess }) => {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
 
-            {/* بخش لینک‌های پایینی */}
             <div className="login-footer-links">
               <div className="forgot-password">
                 <Button 
@@ -167,13 +168,12 @@ const LoginPage = ({ onLoginSuccess }) => {
         </div>
       </div>
 
-      {/* سمت راست: بخش تصویر همراه با کلاسی که انیمیشن را فعال می‌کند */}
+      {/* سمت راست: بخش تصویر */}
       <div className="login-right">
         <div className="image-right">
           <img src={image} alt="innovation" className="animated-login-img" />
         </div>
       </div>
-
     </div>
   );
 };

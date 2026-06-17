@@ -27,10 +27,77 @@
 .modern-table {  width: 100%; border-collapse: collapse; }
 
 
-.table-controls{ display: flex; padding: 20px; gap: 50px; padding-left: 170px; }
-.search-wrapper , .filter-wrapper{ position: relative; display: flex;   height: 30px;  }
-.input-icon{  color: #888;  font-size: 20px;}
+/* ========================================================== */
+/* ✨ بخش کنترل‌های بالای جدول (سرچ و فیلتر) ✨ */
+/* ========================================================== */
+.table-inner {
+  width: 100%;
+}
 
+.table-controls { 
+  display: flex; 
+  align-items: center;
+  gap: 16px; 
+  padding: 0 0 20px 0; 
+  width: 100%;
+}
+
+.search-wrapper, .filter-wrapper { 
+  position: relative; 
+  display: flex; 
+  align-items: center;
+  flex: 1; 
+  max-width: 280px; 
+}
+
+.search-wrapper .input-icon, .filter-wrapper .input-icon { 
+  position: absolute;
+  left: 12px;
+  color: #888; 
+  font-size: 14px;
+  pointer-events: none; 
+  z-index: 2;
+}
+
+.search-wrapper input {
+  width: 100%;
+  height: 38px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 12px 0 36px; 
+  color: var(--text-main);
+  font-size: 13.5px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-wrapper input:focus {
+  border-color: var(--accent-color);
+}
+
+.filter-wrapper select {
+  width: 100%;
+  height: 38px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0 28px 0 36px; 
+  color: var(--text-main);
+  font-size: 13.5px;
+  outline: none;
+  cursor: pointer;
+  appearance: none; 
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+}
+
+.filter-wrapper select:focus {
+  border-color: var(--accent-color);
+}
+/* ========================================================== */
 
 
 .modern-table th { color: var(--text-dim); border-bottom: 1px solid var(--border-color); padding: 12px; text-align: left; }
@@ -44,7 +111,7 @@
   border-radius: 12px; 
   padding: 20px; 
   border: 1px solid var(--border-color); 
-  height: 600px; /* ثابت نگه داشتن ارتفاع پنل */
+  height: 600px; 
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -97,7 +164,7 @@
 }
 
 .confirm-delete-btn {
-  background-color: #ef4444; /* Red for delete */
+  background-color: #ef4444; 
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -106,15 +173,13 @@
 }
 
 .cancel-btn {
-  background-color: #4b5563; /* Gray for cancel */
+  background-color: #4b5563; 
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
 }
-
-
 
 .panel-footer-btns { 
   flex-shrink: 0; display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); margin-top: 10px;
@@ -136,7 +201,10 @@
 .drop-btn:hover { background: var(--bg-hover); }
 .no-data-text { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 10px; }
 
-/* --- Styles for Modals --- */
+
+/* ========================================================== */
+/* ✨ 🛠️ بخش اصلاح شده و فوق‌العاده شیک مودال انتخاب کاربر ✨ */
+/* ========================================================== */
 .cm-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
@@ -145,21 +213,96 @@
 
 .cm-modal-content {
   background: var(--card-bg); border: 1px solid var(--border-color);
-  border-radius: 16px; width: 450px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border-radius: 16px; width: 500px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .close-icon { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1.2rem; }
 
-.user-selection-list { max-height: 350px; overflow-y: auto; margin-top: 10px; }
-.user-select-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 12px; border-radius: 8px; margin-bottom: 5px; transition: 0.2s;
+.user-selection-list { 
+  max-height: 350px; 
+  overflow-y: auto; 
+  margin-top: 10px;
+  padding-right: 4px;
 }
-.user-select-item:hover { background: var(--bg-hover); }
 
-.user-info-mini { display: flex; align-items: center; gap: 12px; }
-.avatar-mini { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+/* اصلاح تداخل و خرابی لایوت سطرها */
+.user-select-item {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px 14px; 
+  border-radius: 8px; 
+  margin-bottom: 8px; 
+  background: var(--bg-dark);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.user-select-item:hover { 
+  background: var(--bg-hover); 
+  border-color: var(--border-color);
+}
+
+.user-info-mini { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+  flex: 1;
+  min-width: 0; /* جلوگیری از شکستن متون طولانی */
+}
+
+.user-info-mini span {
+  font-size: 13.5px;
+  color: var(--text-main);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-info-mini small {
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.avatar-mini { 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 50%; 
+  background: var(--accent-color); 
+  color: #fff;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 12px; 
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* استایل‌دهی شیک و مینی‌مال به دکمه اضافه کردن داخل مودال */
+.add-action-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.add-action-btn:hover {
+  background: #0056b3;
+}
+/* ========================================================== */
+
 
 .edit-form .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
 .edit-form input, .edit-form select {
@@ -175,7 +318,7 @@
 .form-textarea {
   width: 100%;
   padding: 10px;
-  background: var(--bg-dark); /* Match your dark theme */
+  background: var(--bg-dark); 
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-main);

@@ -17,148 +17,28 @@ const UserNotifications = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ========================================================
-  // 🛰️ بخش متدهای اتصال به بک‌اِند (فعلاً کامنت شده است)
+  // 🛰️ متدهای اتصال مستقیم و زنده به بک‌اِند
   // ========================================================
-  /*
+  
+  // ۱. دریافت تمام نوتیفیکیشن‌ها از دیتابیس لایو
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem('token');
-      // Matched precisely with GET /api/notifications inside NotificationController
+      setLoading(true);
+      const token = sessionStorage.getItem('token');
+      
       const response = await axios.get('http://localhost:8081/api/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setNotifications(response.data);
+      
+      if (response.data && Array.isArray(response.data)) {
+        setNotifications(response.data);
+      } else {
+        setNotifications([]);
+      }
+      setError('');
     } catch (err) {
       console.error("Database connection failure:", err);
       setError('Could not fetch synchronized live notifications map.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOpenModal = async (notif) => {
-    setSelectedNotif(notif);
-    setIsModalOpen(true);
-
-    // If the notification is unread, automatically fire PUT trigger to match backend route
-    if (!notif.read) {
-      try {
-        const token = localStorage.getItem('token');
-        await axios.put(`http://localhost:8081/api/notifications/${notif.id}/read`, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        // Refresh local UI logs state array to clear unread counts or markers
-        setNotifications(prev => 
-          prev.map(n => n.id === notif.id ? { ...n, read: true } : n)
-        );
-      } catch (err) {
-        console.error("Failed to commit read status transaction:", err);
-      }
-    }
-  };
-
-  const handleMarkAllRead = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      // Intersects directly with PUT /api/notifications/read-all inside Farid's controller
-      await axios.put('http://localhost:8081/api/notifications/read-all', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    } catch (err) {
-      console.error("Batch clear update trace error:", err);
-    }
-  };
-
-  const handleDeleteNotification = async (e, id) => {
-    e.stopPropagation(); // Prevents opening inspection panel popup modal instantly
-    try {
-      const token = localStorage.getItem('token');
-      // Leverages DELETE /api/notifications/{id} mapping endpoint rule
-      await axios.delete(`http://localhost:8081/api/notifications/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotifications(prev => prev.filter(n => n.id !== id));
-      if (selectedNotif && selectedNotif.id === id) {
-        setIsModalOpen(false);
-      }
-    } catch (err) {
-      console.error("Purge operations execution error:", err);
-    }
-  };
-  */
-
-
-  // ========================================================
-  // 🧪 بخش دیتای موک و متدهای شبیه‌سازی فرانت‌اِند
-  // ========================================================
-  const fetchNotifications = () => {
-    try {
-      const mockNotifications = [
-        {
-          id: 1,
-          message: "Your invention design 'AI-Powered Medical Diagnosis System' has been APPROVED by the Biomedical Committee.",
-          read: false,
-          createdAt: "2026-06-05T14:22:00Z"
-        },
-        {
-          id: 2,
-          message: "The specification documentation for 'Autonomous Agricultural Drone Mesh' was REJECTED. Please check reviewer feedback.",
-          read: false,
-          createdAt: "2026-06-04T09:15:00Z"
-        },
-        {
-          id: 3,
-          message: "Your application 'Quantum Cryptography Handshake Protocol' has moved to APPROVED status after final evaluation.",
-          read: true,
-          createdAt: "2026-06-02T11:00:00Z"
-        },
-        {
-          id: 4,
-          message: "Evaluation update: 'Next-Gen Solid State Battery Alloy' has passed formal verification and is now APPROVED.",
-          read: false,
-          createdAt: "2026-06-01T18:30:00Z"
-        },
-        {
-          id: 5,
-          message: "The submission 'Urban Traffic Optimization via Edge Computing' was REJECTED due to delay vector thresholds overflow.",
-          read: true,
-          createdAt: "2026-05-28T10:45:00Z"
-        },
-        {
-          id: 6,
-          message: "Congratulations! Your centralized project ledger log is APPROVED by the Hardware Systems Panel.",
-          read: true,
-          createdAt: "2026-05-25T13:12:00Z"
-        },
-        {
-          id: 7,
-          message: "Security Alert: A new login transaction handshake token was registered for your profile key dashboard.",
-          read: true,
-          createdAt: "2026-05-22T08:05:00Z"
-        },
-        {
-          id: 8,
-          message: "Your draft record 'Decentralized Smart Grid Protocol' status remains PENDING arbitration review.",
-          read: false,
-          createdAt: "2026-05-20T16:00:00Z"
-        },
-        {
-          id: 9,
-          message: "Verification complete: Academic evaluation for system code #IAPMS-104 is officially APPROVED.",
-          read: true,
-          createdAt: "2026-05-18T11:55:00Z"
-        },
-        {
-          id: 10,
-          message: "The evaluation board has REJECTED the architecture design amendment proposed on structural grid maps.",
-          read: true,
-          createdAt: "2026-05-15T14:20:00Z"
-        }
-      ];
-      setNotifications(mockNotifications);
-    } catch (err) {
-      setError('Failed to inject mock live notifications.');
     } finally {
       setLoading(false);
     }
@@ -168,35 +48,66 @@ const UserNotifications = () => {
     fetchNotifications();
   }, []);
 
-  // شبیه‌سازی باز کردن مودال و خوانده شدن نوتیفیکیشن در حالت فرانت‌اِند مستقل
-  const handleOpenModal = (notif) => {
+  // ۲. باز کردن مودال نمایش جزئیات و تایید خودکار خوانده شدن تک اعلان
+  const handleOpenModal = async (notif) => {
     setSelectedNotif(notif);
     setIsModalOpen(true);
 
-    if (!notif.read) {
-      setNotifications(prev => 
-        prev.map(n => n.id === notif.id ? { ...n, read: true } : n)
-      );
+    // بررسی هوشمند وضعیت خوانده شدن برای فیلدهای تفکیک شده دیتابیس
+    const isAlreadyRead = notif.read || notif.isRead || false;
+
+    if (!isAlreadyRead) {
+      try {
+        const token = sessionStorage.getItem('token');
+        await axios.put(`http://localhost:8081/api/notifications/${notif.id}/read`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // به‌روزرسانی سریع وضعیت در لوکال استیت فرانت‌اِند
+        setNotifications(prev => 
+          prev.map(n => n.id === notif.id ? { ...n, read: true, isRead: true } : n)
+        );
+      } catch (err) {
+        console.error("Failed to commit read status transaction:", err);
+      }
     }
   };
 
-  // شبیه‌سازی خواندن همهٔ نوتیفیکیشن‌ها در حالت فرانت‌اِند مستقل
-  const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  // شبیه‌سازی حذف نوتیفیکیشن در حالت فرانت‌اِند مستقل
-  const handleDeleteNotification = (e, id) => {
-    e.stopPropagation();
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    if (selectedNotif && selectedNotif.id === id) {
-      setIsModalOpen(false);
+  // ۳. خوانده شدن همه‌ٔ اعلان‌ها به صورت گروهی
+  const handleMarkAllRead = async () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      await axios.put('http://localhost:8081/api/notifications/read-all', {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setNotifications(prev => prev.map(n => ({ ...n, read: true, isRead: true })));
+    } catch (err) {
+      console.error("Batch clear update trace error:", err);
     }
   };
 
-  // Safe parsing extraction assistant to divide your unified message string cleanly
+  // ۴. حذف کامل اعلان از لیست دیتابیس و فرانت‌اِند
+  const handleDeleteNotification = async (e, id) => {
+    e.stopPropagation(); // جلوگیری از باز شدن ناگهانی پنجره مودال در زمان کلیک سطل زباله
+    try {
+      const token = sessionStorage.getItem('token');
+      await axios.delete(`http://localhost:8081/api/notifications/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      if (selectedNotif && selectedNotif.id === id) {
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      console.error("Purge operations execution error:", err);
+    }
+  };
+
+  // تابع کمکی برای جداسازی وضعیت کلمات کلیدی پیام و ست کردن رنگ آیکون‌ها
   const parseNotificationContent = (rawMessage) => {
-    if (!rawMessage) return { status: 'UNKNOWN', body: 'No message context provided.' };
+    if (!rawMessage) return { status: 'PENDING', text: 'No message context provided.' };
     
     let status = 'PENDING';
     if (rawMessage.toUpperCase().includes('APPROVED')) status = 'APPROVED';
@@ -213,15 +124,18 @@ const UserNotifications = () => {
     );
   }
 
+  // بررسی وضعیت وجود اعلان خوانده نشده برای نمایش یا مخفی‌سازی دکمه Mark All Read
+  const hasUnread = notifications.some(n => n.read === false || n.isRead === false);
+
   return (
     <div className="notif-workspace-container">
-      {/* Dynamic Upper Control Headline */}
+      {/* هدر بالایی کنترل پنل اعلان‌ها */}
       <div className="notif-section-header">
         <div className="headline-text-block">
           <h2><FaBell className="ambient-bell-glow" /> Notification Center</h2>
           <p>Review real-time transaction updates pushed directly by institutional security and evaluation services.</p>
         </div>
-        {notifications.some(n => !n.read) && (
+        {hasUnread && (
           <button className="batch-processing-btn" onClick={handleMarkAllRead}>
             <FaEnvelopeOpen /> Mark All Read
           </button>
@@ -230,7 +144,7 @@ const UserNotifications = () => {
 
       {error && <div className="workspace-error-banner">{error}</div>}
 
-      {/* Main Container Layout */}
+      {/* بخش اصلی نمایش محتوا یا فالبک خالی بودن لیست */}
       {notifications.length === 0 ? (
         <div className="empty-inbox-fallback">
           <FaInbox className="fallback-vector-graphic" />
@@ -241,17 +155,20 @@ const UserNotifications = () => {
         <div className="notifications-table-layout">
           {notifications.map((notif) => {
             const parsed = parseNotificationContent(notif.message);
+            const isUnread = notif.read === false || notif.isRead === false;
+            
             return (
               <div 
                 key={notif.id} 
-                className={`notif-horizontal-row ${!notif.read ? 'unread-state' : ''}`}
+                className={`notif-horizontal-row ${isUnread ? 'unread-state' : ''}`}
                 onClick={() => handleOpenModal(notif)}
               >
-                {/* Active Indicator Pillar Component */}
+                {/* دایره پالس‌زن وضعیت خوانده نشده */}
                 <div className="unread-dot-indicator">
-                  {!notif.read && <FaCircle className="pulse-dot" />}
+                  {isUnread && <FaCircle className="pulse-dot" />}
                 </div>
 
+                {/* آیکون وضعیت تایید یا رد درخواست */}
                 <div className="notif-icon-badge-box">
                   {parsed.status === 'APPROVED' ? (
                     <div className="badge-shape positive"><FaCheckCircle /></div>
@@ -260,6 +177,7 @@ const UserNotifications = () => {
                   )}
                 </div>
 
+                {/* متن پیام اصلی و مهر زمان ساخت */}
                 <div className="notif-message-preview-cell">
                   <p className="main-message-string-truncate">{parsed.text}</p>
                   <span className="notif-timestamp-tag">
@@ -267,6 +185,7 @@ const UserNotifications = () => {
                   </span>
                 </div>
 
+                {/* دکمه عملیاتی حذف و پاکسازی */}
                 <div className="notif-row-actions-cell">
                   <button 
                     className="notif-trash-action-btn" 
@@ -282,7 +201,7 @@ const UserNotifications = () => {
         </div>
       )}
 
-      {/* 2. Detailed Verification Target Inspection Modal Popup Panel */}
+      {/* مودال پاپ‌آپ نمایش کامل جزئیات اعلان انتخاب شده */}
       {isModalOpen && selectedNotif && (
         <div className="modal-fixed-overlay-frame" onClick={() => setIsModalOpen(false)}>
           <div className="modal-layout-box" onClick={(e) => e.stopPropagation()}>

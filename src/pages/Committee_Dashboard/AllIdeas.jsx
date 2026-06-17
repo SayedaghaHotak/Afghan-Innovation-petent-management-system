@@ -1,77 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import RecentApplicationTable from '../components/RecentApplicationsTable'; // Double check your component path
-import { FaSearch, FaFilter } from 'react-icons/fa';
-import './AllIdeas.css'; 
-  
+import React, { useState, useEffect } from "react";
+import axiosInstance from "axios"; // استفاده از اکسسیوس استاندارد پروژه
+import RecentApplicationTable from "../components/RecentApplicationsTable"; 
+import { FaSearch, FaFilter } from "react-icons/fa";
+import "./AllIdeas.css";
+
 const AllIdeasTab = () => {
-  // 1. States for search, filter, and the main data array
-  const [ideas, setIdeas] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [allRawPatents, setAllRawPatents] = useState([]); // ذخیره کل دیتای خام آمده از بک‌اِند
+  const [displayIdeas, setDisplayIdeas] = useState([]);   // دیتای نهایی که بعد از سرچ و فیلتر به جدول داده می‌شود
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 2. Mock Data with English text for initial layout and testing
-  const mockIdeas = [
-    { id: '1', title: 'Smart Traffic Management System for Kabul', student: 'Ahmad Rahimi', category: 'IoT', status: 'Pending', date: '2026/05/12' },
-    { id: '2', title: 'Student Health Tracking Application', student: 'Sara Karimi', category: 'Mobile', status: 'Approved', date: '2026/05/10' },
-    { id: '3', title: 'Centralized Thesis Database Platform', student: 'Ali Hamdard', category: 'Web', status: 'Rejected', date: '2026/04/28' },
-    { id: '4', title: 'University Grade Automation System', student: 'Maryam Amini', category: 'AI', status: 'Approved', date: '2026/04/15' },
-  ];
-
+  // ۱. فقط یک‌بار در ابتدا کل دیتای سیستم را از بک‌اِند لود می‌کنیم
   useEffect(() => {
-    // =========================================================================
-    // 🌐 BACKEND API CONNECTION (SPRING BOOT INTEGRATION)
-    // =========================================================================
-    /*
     const fetchAllIdeasFromBackend = async () => {
       setIsLoading(true);
       try {
-        // Fetching data from the admin endpoint provided by your backend partner
-        const response = await fetch('http://localhost:8080/api/admin/ideas', {
-          method: 'GET',
+        const token = sessionStorage.getItem("token");
+
+        const response = await axiosInstance.get("http://localhost:8081/api/v1.0/patents/all-system-patents", {
           headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': `Bearer ${yourToken}` // If authentication token is required
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           }
         });
-        if (response.ok) {
-          const data = await response.json();
-          setIdeas(data); // Populate the table with real backend data
-        }
+
+        const allPatents = response.data || [];
+
+        // مپ کردن امن دیتای بک‌اِند
+        const mapped = allPatents.map((p) => {
+          let formattedDate = "Recent";
+          if (p && p.submissionDate) {
+            formattedDate = p.submissionDate.includes("T") ? p.submissionDate.split("T")[0] : p.submissionDate;
+          } else if (p && p.createdAt) {
+            formattedDate = p.createdAt.includes("T") ? p.createdAt.split("T")[0] : p.createdAt;
+          }
+
+          let studentName = "System User";
+          if (p) {
+            if (p.innovatorName) {
+              studentName = p.innovatorName;
+            } else if (p.innovator) {
+              const fullNameProperty = p.innovator.fullName;
+              const combinedName = `${p.innovator.firstName || ""} ${p.innovator.lastName || ""}`.trim();
+              studentName = fullNameProperty || combinedName || p.innovator.email || "System User";
+            }
+          }
+
+          return {
+            id: p?.id || Math.random(),
+            title: p?.title || "Untitled Innovation",
+            student: studentName, 
+            date: formattedDate,  
+            status: p?.status || "PENDING",
+          };
+        }).sort((a, b) => b.id - a.id);
+
+        setAllRawPatents(mapped);
+        setDisplayIdeas(mapped); // در ابتدا کل دیتا نشان داده می‌شود
       } catch (error) {
         console.error("Error fetching ideas from Spring Boot:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchAllIdeasFromBackend();
-    */
 
-    // Using mock data for client-side testing for now
-    setIdeas(mockIdeas);
+    fetchAllIdeasFromBackend();
   }, []);
 
-  // 3. Search & Filter logic (Executes simultaneously)
-  const filteredIdeas = ideas.filter(idea => {
-    const matchesSearch = 
-      idea.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      idea.student.toLowerCase().includes(searchTerm.toLowerCase());
-      
-    const matchesStatus = statusFilter === 'all' || idea.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
+  // ۲. 🚀 موتور فیلتر زنده: به محض تغییر searchTerm یا statusFilter، این بخش اجرا شده و جدول را آپدیت می‌کند
+  useEffect(() => {
+    const filtered = allRawPatents.filter((idea) => {
+      // الف) بررسی مطابقت با کادر سرچ (عنوان یا نام دانشجو)
+      const matchesSearch =
+        (idea.title && idea.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (idea.student && idea.student.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      // ب) بررسی مطابقت با دراپ‌داون فیلتر وضعیت
+      const matchesStatus =
+        statusFilter === "ALL" || 
+        (idea.status && idea.status.toUpperCase() === statusFilter.toUpperCase());
+
+      return matchesSearch && matchesStatus;
+    });
+
+    setDisplayIdeas(filtered);
+  }, [searchTerm, statusFilter, allRawPatents]); // وابستگی‌ها کاملاً تنظیم شده‌اند
 
   return (
     <div className="all-ideas-tab-viewport">
-      
       {/* Search and Filter Action Bar */}
       <div className="tab-action-bar">
         <div className="search-box-wrapper">
           <FaSearch className="search-icon-inside" size={16} />
-          <input 
-            type="text" 
-            placeholder="Search by title or student name..." 
+          <input
+            type="text"
+            placeholder="Search by title or student name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -79,27 +103,32 @@ const AllIdeasTab = () => {
 
         <div className="filter-box-wrapper">
           <FaFilter className="filter-icon-inside" size={16} />
-          <select 
-            value={statusFilter} 
+          <select
+            value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="all">All Statuses</option>
-            <option value="Pending">Pending Review</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING">Pending Review</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
           </select>
         </div>
       </div>
 
-      {/* 4. Rendering the table dynamically via props */}
+      {/* Table Container */}
       <div className="ideas-table-container-card">
         {isLoading ? (
-          <div className="loading-spinner-zone">Loading data, please wait...</div>
+          <div className="loading-spinner-zone">
+            Loading data, please wait...
+          </div>
+        ) : displayIdeas.length > 0 ? (
+          <RecentApplicationTable data={displayIdeas} />
         ) : (
-          <RecentApplicationTable data={filteredIdeas} />
+          <div className="no-results-zone">
+            No innovations found matching your criteria.
+          </div>
         )}
       </div>
-
     </div>
   );
 };

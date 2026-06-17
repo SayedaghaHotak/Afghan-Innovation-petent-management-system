@@ -18,149 +18,27 @@ const MyIdeas = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // ==========================================
-  // 🛰️ بخش بک‌اِند اصلی (فعلاً کامنت شده است)
+  // 🛰️ Connected Live Backend Stream
   // ==========================================
-  /*
   const fetchMyIdeas = async () => {
     setLoading(true);
+    setError('');
     try {
-      const token = localStorage.getItem('token');
-      // Matched with your exact base endpoint @GetMapping in PatentController
+      const token = sessionStorage.getItem('token');
+      
+      // Points directly to the user-specific @GetMapping inside PatentController.java
       const response = await axios.get('http://localhost:8081/api/v1.0/patents', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setIdeas(response.data);
+      
+      if (response.data && Array.isArray(response.data)) {
+        setIdeas(response.data);
+      } else {
+        setIdeas([]);
+      }
     } catch (err) {
       console.error("Error connecting to iapms database:", err);
       setError('System could not establish handshake with server repository.');
-    } finally {
-      setLoading(false);
-    }
-  };
-  */
-
-  // ==========================================
-  // 🧪 بخش دیتای موک (۱۰ ایده برای تست فرانت‌اِند)
-  // ==========================================
-  const fetchMyIdeas = () => {
-    setLoading(true);
-    try {
-      const mockIdeas = [
-        {
-          id: 101,
-          title: "AI-Powered Medical Diagnosis System",
-          description: "An advanced machine learning framework capable of analyzing radiological scans to detect early-stage thoracic anomalies with high accuracy.",
-          status: "APPROVED",
-          category: "HealthTech",
-          createdAt: "2026-01-15T10:00:00Z",
-          originalFileName: "medical_diagnosis_v1.pdf",
-          reviewerFeedback: "Excellent structural design. The core algorithm demonstrates great synchronization with standard clinical matrices.",
-          assignedCommittee: { name: "Biomedical Engineering Council" }
-        },
-        {
-          id: 102,
-          title: "Decentralized Smart Grid Protocol",
-          description: "A secure blockchain ledger implementation tailored for energy distribution architectures, allowing peer-to-peer micro-transactions between solar grids.",
-          status: "PENDING",
-          category: "Energy / IoT",
-          createdAt: "2026-02-02T14:30:00Z",
-          originalFileName: "smart_grid_draft.pdf",
-          reviewerFeedback: null,
-          assignedCommittee: { name: "Electrical Faculty Review Board" }
-        },
-        {
-          id: 103,
-          title: "Autonomous Agricultural Drone Mesh",
-          description: "A centralized control algorithm written to govern a swarm of ultra-lightweight drones for real-time moisture logging and automated crop spraying.",
-          status: "REJECTED",
-          category: "Robotics",
-          createdAt: "2026-02-20T09:15:00Z",
-          originalFileName: "agri_drone_specs.docx",
-          reviewerFeedback: "The battery consumption vectors under extreme wind simulation need immediate modification. Re-submit after fixing.",
-          assignedCommittee: { name: "Mechatronics Faculty Council" }
-        },
-        {
-          id: 104,
-          title: "Quantum Cryptography Handshake Protocol",
-          description: "An enterprise-grade encryption mechanism designed to safely establish web handshake tunnels immune to quantum computing brute-force tactics.",
-          status: "APPROVED",
-          category: "Cybersecurity",
-          createdAt: "2026-03-01T11:00:00Z",
-          originalFileName: "quantum_crypto_core.pdf",
-          reviewerFeedback: "Approved for full registration. Meets all criteria for next-gen network defenses.",
-          assignedCommittee: { name: "Computer Science Arbitration Hub" }
-        },
-        {
-          id: 105,
-          title: "Water Filtration Via Nano-Carbon Mesh",
-          description: "A novel biochemical filtering process using customized carbon nanotube arrangements to extract heavy metals from industrial wastewater streams.",
-          status: "PENDING",
-          category: "Chemical Tech",
-          createdAt: "2026-03-12T16:45:00Z",
-          originalFileName: "nano_filtration_v2.pdf",
-          reviewerFeedback: null,
-          assignedCommittee: { name: "Environmental Faculty Assembly" }
-        },
-        {
-          id: 106,
-          title: "E-Learning Adaptive Knowledge Graphs",
-          description: "An educational data platform mapping student behavioral feedback loops to generate real-time dynamic training paths automatically.",
-          status: "PENDING",
-          category: "EdTech",
-          createdAt: "2026-03-29T13:20:00Z",
-          originalFileName: null, // تستی بدون سند چسبیده
-          reviewerFeedback: null,
-          assignedCommittee: { name: "Academic Curricula Committee" }
-        },
-        {
-          id: 107,
-          title: "Next-Gen Solid State Battery Alloy",
-          description: "A experimental lithium-sulfur chemical configuration targeting 3x energy density ratios compared to consumer-grade cells.",
-          status: "APPROVED",
-          category: "Materials Science",
-          createdAt: "2026-04-05T08:00:00Z",
-          originalFileName: "battery_alloy_matrix.pdf",
-          reviewerFeedback: "The chemical stabilization charts are highly impressive. Registered successfully.",
-          assignedCommittee: { name: "Metallurgy Research Department" }
-        },
-        {
-          id: 108,
-          title: "Urban Traffic Optimization via Edge Computing",
-          description: "A network architecture placing machine vision models at physical intersections to dynamic-route city emergency vehicles.",
-          status: "REJECTED",
-          category: "Smart City",
-          createdAt: "2026-04-18T17:10:00Z",
-          originalFileName: "traffic_edge_network.pdf",
-          reviewerFeedback: "Handover delay thresholds under peak network strain exceed safe system requirements. Please refine.",
-          assignedCommittee: { name: "Information Technology Council" }
-        },
-        {
-          id: 109,
-          title: "Voice-Assisted Offline Operating System Shell",
-          description: "A lightweight voice recognition engine operating totally without external cloud microservices, intended for critical accessibility hardware.",
-          status: "PENDING",
-          category: "Software Architecture",
-          createdAt: "2026-05-01T12:00:00Z",
-          originalFileName: "voice_shell_proposal.pdf",
-          reviewerFeedback: null,
-          assignedCommittee: null // تست لود به عنوان Academic Faculty Council پیشفرض
-        },
-        {
-          id: 110,
-          title: "Biometric Wallet with Thermal Sensors",
-          description: "A cold-storage hardware crypto wallet adding dynamic body temperature verification to block bypass vectors using duplicated physical casts.",
-          status: "APPROVED",
-          category: "Hardware / FinTech",
-          createdAt: "2026-05-10T10:25:00Z",
-          originalFileName: "biometric_wallet_final.pdf",
-          reviewerFeedback: "Highly creative security integration. The verification blueprint is flawless.",
-          assignedCommittee: { name: "Hardware Systems Review Panel" }
-        }
-      ];
-      setIdeas(mockIdeas);
-      setError('');
-    } catch (err) {
-      setError('Failed to inject mock data.');
     } finally {
       setLoading(false);
     }
@@ -170,7 +48,7 @@ const MyIdeas = () => {
     fetchMyIdeas();
   }, []);
 
-  // Compute stats locally via Java-safe variables
+  // Compute stats dynamically from database response
   const totalCount = ideas.length;
   const pendingCount = ideas.filter(i => i.status === 'PENDING' || !i.status).length;
   const approvedCount = ideas.filter(i => i.status === 'APPROVED').length;
@@ -186,18 +64,47 @@ const MyIdeas = () => {
     setSelectedIdea(null);
   };
 
-  const handleDownloadFile = (id) => {
-    // Points directly to viewFile method mapping inside PatentController.java
-    window.open(`http://localhost:8081/api/v1.0/patents/view/${id}`, '_blank');
-  };
 
-  if (loading) {
-    return (
-      <div className="my-ideas-container">
-        <div className="system-loading">Compiling innovation log vectors...</div>
-      </div>
-    );
+
+
+
+
+
+
+const handleDownloadFile = async (id, originalFileName) => {
+  try {
+    const token = sessionStorage.getItem('token');
+    
+    // ۱. دریافت فایل به صورت باینری (blob) همراه با توکن امنیتی
+    const response = await axios.get(`http://localhost:8081/api/v1.0/patents/view/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: 'blob' // خیلی مهم: به اکسپوس می‌گوید خروجی فایل باینری است
+    });
+
+    // ۲. ساخت یک لینک موقت در مرورگر برای دانلود فایل
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    
+    // تعیین اسم فایل (اگر اسمی نبود، یک اسم پیشفرض می‌گذارد)
+    link.setAttribute('download', originalFileName || `document_${id}.pdf`);
+    
+    // ۳. شبیه‌سازی کلیک و دانلود فایل
+    document.body.appendChild(link);
+    link.click();
+    
+    // ۴. پاکسازی حافظه
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Error downloading file:", err);
+    alert("Could not download the file. Access Denied or File Not Found.");
   }
+};
+
+
+
+
 
   return (
     <div className="my-ideas-container">
@@ -282,7 +189,7 @@ const MyIdeas = () => {
                     <FaEye /> Inspect File
                   </button>
                   {idea.originalFileName && (
-                    <button className="cta-action-btn download" onClick={() => handleDownloadFile(idea.id)}>
+                    <button className="cta-action-btn download" onClick={() => handleDownloadFile(idea.id, idea.originalFileName)}>
                       <FaDownload /> Document
                     </button>
                   )}
@@ -293,7 +200,7 @@ const MyIdeas = () => {
         </div>
       )}
 
-      {/* 3. Sliding Inspection Drawer Component Panel */}
+      {/* Sliding Inspection Drawer Component Panel */}
       <div className={`inspection-slide-drawer ${isDrawerOpen ? 'active' : ''}`}>
         <div className="drawer-overlay" onClick={closeInspectionDrawer}></div>
         <div className="drawer-content-box">

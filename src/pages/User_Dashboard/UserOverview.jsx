@@ -7,14 +7,14 @@ import RecentApplicationsTable from '../components/RecentApplicationsTable';
 import { 
   FaFileAlt, FaCheckCircle, FaClock, FaExclamationTriangle,
   FaFacebook, FaWhatsapp, FaTelegram, FaLinkedin, FaBuilding,
-  FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPaperPlane
+  FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPaperPlane 
 } from 'react-icons/fa';
 import './UserOverview.css'; 
 
 const UserOverview = () => {
   const navigate = useNavigate(); 
 
-  // ۱. استیت برای آمارهای عددی (دقیقاً مطابق فیلدهای بک‌اِند شما)
+  // Stats mapped precisely to your Spring Boot's statisticsCollector response keys
   const [stats, setStats] = useState({
     total: 0,
     approved: 0,
@@ -22,23 +22,17 @@ const UserOverview = () => {
     rejected: 0
   });
 
-  // ۲. استیت برای لیست جدول (latestSubmissions)
+  // Recent data array linked directly to response.data.latestSubmissions
   const [recentData, setRecentData] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // استیت فرم تماس محلی برای بخش فوتر تمام‌صفحه
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
   useEffect(() => {
-    // ==========================================
-    // 🛰️ بخش بک‌اِند اصلی (فعلاً کامنت شده است)
-    // ==========================================
-    /*
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         
         if (!token) {
           setError("Session expired. Please log in again.");
@@ -50,6 +44,7 @@ const UserOverview = () => {
           headers: { Authorization: `Bearer ${token}` }
         };
 
+        // Connecting directly to your UserController @GetMapping("/stats") endpoint
         const response = await axios.get('http://localhost:8081/api/v1.0/users/stats', config);
         
         if (response.data) {
@@ -66,63 +61,19 @@ const UserOverview = () => {
         setError('');
       } catch (err) {
         console.error("Backend Connection Error:", err);
-        setError("Failed to fetch dashboard analytics.");
+        setError("Failed to fetch dashboard analytics from the server.");
       } finally {
         setLoading(false);
       }
     };
 
+    // FIX: Executing the stream handshake immediately on component mount
     fetchDashboardData();
-    */
-
-
-    // ==========================================
-    // 🧪 بخش دیتای موک (اصلاح شده برای رندر کامل Date و Innovator)
-    // ==========================================
-    const fetchDashboardMockData = () => {
-      setLoading(true);
-      try {
-        const mockResponse = {
-          totalPatents: 10,
-          approvedPatents: 4,
-          pendingPatents: 4,
-          rejectedPatents: 2,
-          latestSubmissions: [
-            { id: 101, title: "AI-Powered Medical Diagnosis System", category: "HealthTech", status: "APPROVED", createdAt: "2026-01-15T10:00:00Z", date: "2026-01-15", innovator: "احمد مسعود" },
-            { id: 102, title: "Decentralized Smart Grid Protocol", category: "Energy / IoT", status: "PENDING", createdAt: "2026-02-02T14:30:00Z", date: "2026-02-02", innovator: "محمود رحیمی" },
-            { id: 103, title: "Autonomous Agricultural Drone Mesh", category: "Robotics", status: "REJECTED", createdAt: "2026-02-20T09:15:00Z", date: "2026-02-20", innovator: "سهراب کریمی" },
-            { id: 104, title: "Quantum Cryptography Handshake Protocol", category: "Cybersecurity", status: "APPROVED", createdAt: "2026-03-01T11:00:00Z", date: "2026-03-01", innovator: "فرید کریمی" },
-            { id: 105, title: "Water Filtration Via Nano-Carbon Mesh", category: "Chemical Tech", status: "PENDING", createdAt: "2026-03-12T16:45:00Z", date: "2026-03-12", innovator: "الیاس همدرد" },
-            { id: 106, title: "E-Learning Adaptive Knowledge Graphs", category: "EdTech", status: "PENDING", createdAt: "2026-03-29T13:20:00Z", date: "2026-03-29", innovator: "امید ناصری" },
-            { id: 107, title: "Next-Gen Solid State Battery Alloy", category: "Materials Science", status: "APPROVED", createdAt: "2026-04-05T08:00:00Z", date: "2026-04-05", innovator: "شریف سروری" },
-            { id: 108, title: "Urban Traffic Optimization via Edge Computing", category: "Smart City", status: "REJECTED", createdAt: "2026-04-18T17:10:00Z", date: "2026-04-18", innovator: "حسیب الله صمیمی" },
-            { id: 109, title: "Voice-Assisted Offline Operating System Shell", category: "Software Architecture", status: "PENDING", createdAt: "2026-05-01T12:00:00Z", date: "2026-05-01", innovator: "نصرت حقجو" },
-            { id: 110, title: "Biometric Wallet with Thermal Sensors", category: "Hardware / FinTech", status: "APPROVED", createdAt: "2026-05-10T10:25:00Z", date: "2026-05-10", innovator: "سلطان احمدی" }
-          ]
-        };
-
-        setStats({
-          total: mockResponse.totalPatents,
-          approved: mockResponse.approvedPatents,
-          pending: mockResponse.pendingPatents,
-          rejected: mockResponse.rejectedPatents
-        });
-
-        setRecentData(mockResponse.latestSubmissions);
-        setError('');
-      } catch (err) {
-        setError("Failed to fetch mock analytics.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardMockData();
   }, []);
 
   const handleFeedbackSubmit = (e) => {
     e.preventDefault();
-    alert("پیام شما در سیستم دمو با موفقیت ثبت شد!");
+    alert("Your technical support ticket has been submitted to the preview dashboard!");
     setFeedbackMessage('');
   };
 
@@ -132,7 +83,9 @@ const UserOverview = () => {
       {error && <p className="error-message">{error}</p>}
       
       {loading ? (
-        <p className="loading-message">Fetching data from Spring Boot server...</p>
+        <div className="loading-state-wrapper">
+          <p className="loading-message">Fetching operational statistics from Spring Boot server...</p>
+        </div>
       ) : (
         <>
           {/* ================= SECTION 1: DYNAMIC STAT CARDS ================= */}
@@ -145,12 +98,14 @@ const UserOverview = () => {
 
           {/* ================= SECTION 2: LATEST SUBMISSIONS TABLE ================= */}
           <div className="table-full-width-container">
-            <h3 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600' }}>Latest Submissions</h3>
+            <h3 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
+              Latest Submissions
+            </h3>
             {recentData.length > 0 ? (
               <RecentApplicationsTable data={recentData} />
             ) : (
               <p style={{ textAlign: 'center', color: '#64748b', padding: '20px' }}>
-                No recent submissions found in your profile.
+                No recent submissions found in your profile repository.
               </p>
             )}
           </div>
@@ -161,7 +116,7 @@ const UserOverview = () => {
       <div className="aims-fullwidth-forum-hub">
         <div className="forum-inner-grid">
           
-          {/* سمت چپ: بخش تکست‌های طولانی و رسمی درباره سیستم و راه‌های ارتباطی */}
+          {/* Left Column: System Metadata & Communications Vectors */}
           <div className="forum-info-column">
             <div className="forum-block">
               <h3><FaBuilding className="block-icon" /> About AIMS Ecosystem</h3>
@@ -189,7 +144,7 @@ const UserOverview = () => {
               </div>
             </div>
 
-            {/* بخش شبکه های اجتماعی درخواستی */}
+            {/* Social Media Channels */}
             <div className="forum-social-block">
               <h4>Connect via Digital Channels</h4>
               <div className="social-links-row">
@@ -201,7 +156,7 @@ const UserOverview = () => {
             </div>
           </div>
 
-          {/* سمت راست: فرم یکپارچه ارسال بازخورد و تماس با ما */}
+          {/* Right Column: Transmission Support Ticket Form */}
           <div className="forum-form-column">
             <div className="contact-interactive-card">
               <h3>Direct Transmission Terminal</h3>

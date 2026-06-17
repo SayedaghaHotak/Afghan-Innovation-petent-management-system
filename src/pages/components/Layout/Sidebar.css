@@ -2,26 +2,24 @@
 .sidebar {
   width: 210px;
   height: 100vh;
-  background-color: var(--bg-sidebar); 
+  background-color: var(--bg-sidebar);
   color: var(--text-sidebar);
   display: flex;
   flex-direction: column;
   position: fixed;
   left: 0;
   top: 0;
-  box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
-
 .sidebar-header {
-  padding: 25px; 
+  padding: 25px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
 }
-
 
 .sidebar-nav {
   flex: 1;
@@ -47,7 +45,7 @@
 .nav-item.active {
   background-color: rgba(255, 255, 255, 0.1); /* هایلایت ملایم */
   color: white;
-  border-left: 5px solid #ffc107; 
+  border-left: 5px solid #ffc107;
   font-weight: bold;
 }
 

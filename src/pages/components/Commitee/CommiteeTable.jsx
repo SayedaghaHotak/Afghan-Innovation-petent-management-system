@@ -1,7 +1,7 @@
 import React from 'react';
-import { FaSearch, FaFilter, FaEllipsisV } from 'react-icons/fa';
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 
-const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType, onDeleteCommittee }) => {
+const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, onDeleteCommittee }) => {
   return (
     <div className="table-inner">
       <div className="table-controls">
@@ -12,15 +12,6 @@ const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType,
             placeholder="Search name or chair..." 
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
-        </div>
-        <div className="filter-wrapper">
-          <FaFilter className='input-icon' />
-          <select onChange={(e) => setFilterType(e.target.value)}>
-            <option value="All">All Categories</option>
-            <option value="Technical">Technical</option>
-            <option value="Health">Health</option>
-            <option value="Environment">Environment</option>
-          </select>
         </div>
       </div>
 
@@ -46,7 +37,6 @@ const CommitteeTable = ({ data, onSelectCommittee, setSearchTerm, setFilterType,
                 </div>
               </td>
               <td className="chair-txt">{item.chair}</td>
-              {/* اینجا اصلاح شد: نمایش تعداد اعضا برای جلوگیری از ارور */}
               <td>
                 <span className="badge-qty">
                   {Array.isArray(item.members) ? item.members.length : 0} Members

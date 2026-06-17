@@ -1,0 +1,499 @@
+/* src/components/BackupManagement.css */
+
+.backup-panel-container {
+  padding: 24px;
+  direction: ltr;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Base Form Text/Dropdown Select Fields Styling */
+.backup-form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
+  margin-top: 6px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  color: #334155;
+  transition: all 0.2s ease-in-out;
+}
+
+.backup-form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Custom Dropdown Arrow Configuration */
+select.dropdown-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 15px;
+  padding-right: 40px;
+}
+
+/* 📅 Custom Dictionary Dynamic Calendar Box Trigger Styling */
+.picker-position-relative {
+  position: relative;
+}
+
+.custom-dictionary-trigger-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-dictionary-trigger-box:hover {
+  border-color: #2563eb;
+  background-color: #f8fafc;
+}
+
+.calendar-box-icon {
+  color: #2563eb;
+  font-size: 16px;
+}
+
+/* Dropdown Dictionary Layout Panel */
+.custom-dictionary-dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  margin-top: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+}
+
+.panel-dictionary-header {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 6px;
+}
+
+.picker-dictionary-columns-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.dict-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dict-column-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.dict-inner-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dict-inner-select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.highlight-time {
+  border-color: #f59e0b;
+  color: #b45309;
+}
+
+.panel-separator-bar {
+  font-size: 20px;
+  color: #cbd5e1;
+  padding-top: 16px;
+  font-weight: 300;
+}
+
+.btn-close-dictionary {
+  width: 100%;
+  background-color: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-close-dictionary:hover {
+  background-color: #1e293b;
+}
+
+/* Fade animation entry rule */
+.animate-panel-fade {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Recurrent Clock Input Layout Helper */
+input.clock-time-picker {
+  cursor: pointer;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+input.clock-time-picker::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* Global Grid and Architecture Setup */
+.backup-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.backup-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1e293b;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.backup-grid-system {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.backup-card {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.centralize-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-subtitle {
+  margin-top: 0;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+}
+
+.card-description-text {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.cron-status-badge {
+  padding: 12px 15px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px dashed #cbd5e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cron-code-view {
+  color: #0284c7;
+  font-weight: bold;
+}
+
+.form-input-group {
+  margin-bottom: 20px;
+}
+
+.text-success-strong {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+}
+
+.input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.input-help-text {
+  color: #94a3b8;
+  display: block;
+  margin-top: 6px;
+}
+
+.btn-submit-primary {
+  background-color: #2563eb;
+  color: white;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.btn-submit-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-trigger-success {
+  background-color: #10b981;
+  color: white;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  align-self: flex-start;
+  transition: background 0.2s;
+}
+
+.btn-trigger-success:hover {
+  background-color: #059669;
+}
+
+.refresh-btn {
+  background-color: #f1f5f9;
+  color: #334155;
+  padding: 10px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.refresh-btn:hover {
+  background-color: #e2e8f0;
+}
+
+.notification-alert {
+  padding: 14px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  border: 1px solid;
+  line-height: 1.5;
+}
+
+.notification-alert.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+.notification-alert.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+.table-responsive-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+.backup-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.backup-table th {
+  background-color: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #475569;
+}
+.backup-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  line-height: 1.5;
+}
+.backup-table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+.file-name-td {
+  font-weight: 600;
+  color: #0f172a !important;
+}
+.table-loading-state,
+.table-empty-state {
+  padding: 30px;
+  text-align: center;
+  color: #94a3b8;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}
+
+.icon-db-blue {
+  color: #3b82f6;
+}
+.icon-clock-amber {
+  color: #f59e0b;
+}
+.icon-play-green {
+  color: #10b981;
+}
+.icon-history-indigo {
+  color: #6366f1;
+}
+
+.spin {
+  animation: icon-spin 0.8s linear infinite;
+}
+@keyframes icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🔄 Inline Action Rollback Buttons */
+.btn-inline-restore {
+  background-color: #f8fafc;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-inline-restore:hover:not(:disabled) {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+.btn-inline-restore:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  background-color: #f1f5f9;
+}
+
+/* 🗑️ Inline Action File Erasure Buttons */
+.btn-inline-delete {
+  background-color: #dc3545 !important;
+  color: white !important;
+  border: none !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-inline-delete:hover:not(:disabled) {
+  background-color: #bd2130 !important;
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.btn-inline-delete:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  background-color: #f1f5f9 !important;
+  color: #94a3b8 !important;
+  border: 1px solid #e2e8f0 !important;
+}

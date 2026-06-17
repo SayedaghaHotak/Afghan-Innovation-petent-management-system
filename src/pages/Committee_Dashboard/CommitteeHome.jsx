@@ -1,72 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FaInbox, FaCheckCircle, FaTimesCircle, FaHourglassHalf } from 'react-icons/fa';
-import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import StatCard from '../components/StatCard'; 
-import RecentApplicationsTable from '../components/RecentApplicationsTable'; 
-import './CommitteeHome.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  FaInbox,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaHourglassHalf,
+} from "react-icons/fa";
+import {
+  BarChart,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
+import StatCard from "../components/StatCard";
+import RecentApplicationsTable from "../components/RecentApplicationsTable";
+import "./CommitteeHome.css";
 
 const CommitteeHome = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [stats, setStats] = useState({ totalAssigned: 0, approvedCount: 0, rejectedCount: 0, pendingCount: 0 });
+  const [stats, setStats] = useState({
+    totalAssigned: 0,
+    approvedCount: 0,
+    rejectedCount: 0,
+    pendingCount: 0,
+  });
   const [recentIdeas, setRecentIdeas] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
+        const token = sessionStorage.getItem("token");
+        let backendStatsLoaded = false;
 
-        // =========================================================================
-        // 🛑 DEVELOPER MOCK DATA (حالت موقتی برای نمایش چارت و کاردها)
-        // چون فعلاً رول Reviewer در دیتابیس نداری، از این دیتا استفاده می‌شود
-        // =========================================================================
-        const mockAssignedPatents = [
-          { id: 1, title: "Solar Energy System", status: "APPROVED", submissionDate: "2026-05-10", innovator: {firstName: "Ahmad", lastName: "Wali"} },
-          { id: 2, title: "Smart Irrigation", status: "PENDING", submissionDate: "2026-05-12", innovator: {firstName: "Saba", lastName: "Noori"} },
-          { id: 3, title: "AI Health Bot", status: "PENDING", submissionDate: "2026-05-15", innovator: {firstName: "Omid", lastName: "Karimi"} },
-          { id: 4, title: "Wind Turbine Pro", status: "REJECTED", submissionDate: "2026-05-18", innovator: {firstName: "Zia", lastName: "Haq"} }
-        ];
+        // 🚀 ۱. تلاش برای دریافت آمار از پروفایل بک‌اِند
+        try {
+          const profileResponse = await axios.get("http://localhost:8081/api/v1.0/committees/profile", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+          });
 
-        const assignedPatents = mockAssignedPatents; // فعلاً دیتا را از موک می‌گیرد
-        // =========================================================================
+          if (profileResponse.data && profileResponse.data.stats) {
+            const backendStats = profileResponse.data.stats;
+            setStats({
+              totalAssigned: backendStats.totalAssigned || 0,
+              pendingCount: backendStats.pendingReview || 0,
+              approvedCount: backendStats.approvedInnovations || 0,
+              rejectedCount: backendStats.rejectedPlans || 0,
+            });
+            backendStatsLoaded = true;
+          }
+        } catch (profileErr) {
+          console.log("⚠️ Profile endpoint 403. Switching to client-side stats calculation.");
+        }
 
+        // 🚀 ۲. دریافت لیست پتنت‌ها (که با موفقیت 200 کار می‌کند)
+        try {
+          const patentsResponse = await axios.get("http://localhost:8081/api/v1.0/patents/review-list", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+          });
 
-        /* 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑
-           📢 بخش اصلی اتصال به بک‌اِند (فعلاً کامنت شده):
-           وقتی فرید رول REVIEWER را در بک‌اِند ساخت، بخش MOCK بالا را پاک کن 
-           و این چند خط زیر را از کامنت خارج کن:
+          const assignedPatents = patentsResponse.data || [];
 
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8081/api/v1.0/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const assignedPatents = response.data.assignedPatents || [];
-        
-        👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 👑 */
+          // 🔥 اگر پروفایل خطای 403 داد، خودمان کاردها و چارت را از روی دیتای جدول پر می‌کنیم:
+          if (!backendStatsLoaded && assignedPatents.length > 0) {
+            const total = assignedPatents.length;
+            const pending = assignedPatents.filter(p => p && p.status === "PENDING").length;
+            const approved = assignedPatents.filter(p => p && (p.status === "APPROVED" || p.status === "ACCEPTED")).length;
+            const rejected = assignedPatents.filter(p => p && p.status === "REJECTED").length;
 
+            setStats({
+              totalAssigned: total,
+              pendingCount: pending,
+              approvedCount: approved,
+              rejectedCount: rejected,
+            });
+          }
 
-        // منطق مشترک برای محاسبه آمار (چه موک باشد چه بک‌اِند)
-        const total = assignedPatents.length;
-        const approved = assignedPatents.filter(p => p.status === 'APPROVED').length;
-        const rejected = assignedPatents.filter(p => p.status === 'REJECTED').length;
-        const pending = assignedPatents.filter(p => p.status === 'PENDING').length;
+          // مپ کردن دیتای جدول نهایی
+          const mappedIdeas = assignedPatents.slice(0, 5).map((p) => {
+            let formattedDate = "Recent";
+            if (p && p.submissionDate) {
+              formattedDate = p.submissionDate.includes("T") ? p.submissionDate.split("T")[0] : p.submissionDate;
+            } else if (p && p.createdAt) {
+              formattedDate = p.createdAt.includes("T") ? p.createdAt.split("T")[0] : p.createdAt;
+            }
 
-        setStats({ totalAssigned: total, approvedCount: approved, rejectedCount: rejected, pendingCount: pending });
+            let studentName = "System User";
+            if (p) {
+              if (p.innovatorName) {
+                studentName = p.innovatorName;
+              } else if (p.innovator) {
+                const fullNameProperty = p.innovator.fullName;
+                const combinedName = `${p.innovator.firstName || ""} ${p.innovator.lastName || ""}`.trim();
+                studentName = fullNameProperty || combinedName || p.innovator.email || "System User";
+              }
+            }
 
-        const mappedIdeas = assignedPatents.slice(0, 5).map(p => ({
-          id: p.id,
-          title: p.title || "Untitled Innovation",
-          innovetor: p.innovator ? `${p.innovator.firstName} ${p.innovator.lastName}` : "Unknown",
-          date: p.submissionDate || "Recent",
-          status: p.status
-        }));
+            return {
+              id: p?.id || Math.random(),
+              title: p?.title || "Untitled Innovation",
+              student: studentName,
+              date: formattedDate,
+              status: p?.status || "PENDING",
+            };
+          }).sort((a, b) => b.id - a.id);
 
-        setRecentIdeas(mappedIdeas);
+          setRecentIdeas(mappedIdeas);
+        } catch (patentsErr) {
+          console.error("❌ Error fetching review list patents:", patentsErr);
+        }
+
         setLoading(false);
       } catch (err) {
-        console.error("Error loading committee dashboard:", err);
-        setError("Failed to fetch dashboard data.");
+        console.error("General Error:", err);
+        setError("Failed to load dashboard data.");
         setLoading(false);
       }
     };
@@ -74,68 +132,65 @@ const CommitteeHome = () => {
     fetchDashboardData();
   }, []);
 
-  if (loading) return <div className="loading-spinner">Loading dashboard analytics...</div>;
+  if (loading)
+    return <div className="loading-spinner">Loading dashboard analytics...</div>;
   if (error) return <div className="error-message-zone">{error}</div>;
 
   const chartData = [
-    { name: 'Total Assigned', value: stats.totalAssigned, color: '#f97316' },
-    { name: 'Pending Review', value: stats.pendingCount, color: '#eab308' },
-    { name: 'Approved', value: stats.approvedCount, color: '#22c55e' },
-    { name: 'Rejected', value: stats.rejectedCount, color: '#ef4444' }
+    { name: "Total Assigned", value: stats.totalAssigned, color: "#f97316" },
+    { name: "Pending Review", value: stats.pendingCount, color: "#eab308" },
+    { name: "Approved", value: stats.approvedCount, color: "#22c55e" },
+    { name: "Rejected", value: stats.rejectedCount, color: "#ef4444" },
   ];
 
   return (
     <div className="committee-home-viewport">
-      
-      {/* 📑 بخش اول: کاردهای آماری */}
+      {/* 📑 کاردهای آماری */}
       <div className="stat-cards-grid">
-        <StatCard 
-          title="Total Assigned" 
-          value={stats.totalAssigned} 
-          icon={<FaInbox />} 
-          color="#f97316" 
+        <StatCard
+          title="Total Assigned"
+          value={stats.totalAssigned}
+          icon={<FaInbox />}
+          color="#f97316"
           percentage={100}
           trend="Total ideas submitted by innovators"
         />
-        <StatCard 
-          title="Pending Review" 
-          value={stats.pendingCount} 
-          icon={<FaHourglassHalf />} 
-          color="#eab308" 
+        <StatCard
+          title="Pending Review"
+          value={stats.pendingCount}
+          icon={<FaHourglassHalf />}
+          color="#eab308"
           percentage={stats.totalAssigned > 0 ? Math.round((stats.pendingCount / stats.totalAssigned) * 100) : 0}
           trend="Awaiting your evaluation"
         />
-        <StatCard 
-          title="Approved Innovations" 
-          value={stats.approvedCount} 
-          icon={<FaCheckCircle />} 
-          color="#22c55e" 
+        <StatCard
+          title="Approved Innovations"
+          value={stats.approvedCount}
+          icon={<FaCheckCircle />}
+          color="#22c55e"
           percentage={stats.totalAssigned > 0 ? Math.round((stats.approvedCount / stats.totalAssigned) * 100) : 0}
           trend="Successfully evaluated"
         />
-        <StatCard 
-          title="Rejected Plans" 
-          value={stats.rejectedCount} 
-          icon={<FaTimesCircle />} 
-          color="#ef4444" 
+        <StatCard
+          title="Rejected Plans"
+          value={stats.rejectedCount}
+          icon={<FaTimesCircle />}
+          color="#ef4444"
           percentage={stats.totalAssigned > 0 ? Math.round((stats.rejectedCount / stats.totalAssigned) * 100) : 0}
           trend="Not meeting criteria"
         />
       </div>
 
-      {/* 📊 بخش دوم: بار چارت گرافیکی */}
+      {/* 📊 بار چارت گرافیکی */}
       <div className="committee-chart-section">
         <h3>Evaluation Status Overview</h3>
         <div className="chart-container-wrapper">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-color, #f1f5f9)" />
               <XAxis dataKey="name" stroke="var(--text-muted, #94a3b8)" fontSize={12} tickLine={false} />
               <YAxis stroke="var(--text-muted, #94a3b8)" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip 
-                cursor={{ fill: 'rgba(0, 0, 0, 0.02)' }}
-                contentStyle={{ background: 'var(--bg-navbar, #fff)', borderColor: 'var(--border-color, #e2e8f0)', borderRadius: '8px', color: 'var(--text-main, #1e293b)' }}
-              />
+              <Tooltip cursor={{ fill: "rgba(0, 0, 0, 0.02)" }} contentStyle={{ background: "var(--bg-navbar, #fff)", borderColor: "var(--border-color, #e2e8f0)", borderRadius: "8px" }} />
               <Bar dataKey="value" barSize={40} radius={[6, 6, 0, 0]}>
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -146,14 +201,10 @@ const CommitteeHome = () => {
         </div>
       </div>
 
-      {/* 📑 بخش سوم: جدول پتنت‌ها */}
+      {/* 📑 جدول پتنت‌ها */}
       <div className="recent-ideas-table-section">
-        <RecentApplicationsTable 
-          title="Recent Assigned Innovations for Review" 
-          data={recentIdeas} 
-        />
+        <RecentApplicationsTable title="Recent Assigned Innovations for Review" data={recentIdeas} />
       </div>
-
     </div>
   );
 };

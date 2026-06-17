@@ -1,25 +1,38 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './Sidebar.css';
+// src/components/Sidebar.jsx
+import React from "react";
+import { NavLink } from "react-router-dom";
+import "./Sidebar.css";
 
 const Sidebar = ({ links = [] }) => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <h1 className="aims-logo" style={{color: 'var(--accent-color)', fontSize: '1.5rem', margin: '0'}}>AIMS</h1>
+        <h1
+          className="aims-logo"
+          style={{
+            color: "var(--accent-color)",
+            fontSize: "1.5rem",
+            margin: "0",
+          }}
+        >
+          AIMS
+        </h1>
       </div>
 
       <nav className="sidebar-nav">
         {links?.map((item, index) => (
-          <NavLink 
-            to={item.path} 
-            key={index} 
-            // اضافه کردن end باعث می‌شود "Dashboard" فقط وقتی دقیقاً در /admin هستی فعال باشد
-            end={item.path === '/admin'} 
-            className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+          <NavLink
+            to={item.path}
+            key={index}
+            // اضافه کردن end باعث می‌شود "Overview" یا صفحه اصلی فقط در مسیر دقیق خودش فعال بماند
+            end={item.path === "/admin"}
+            className={({ isActive }) =>
+              isActive ? "nav-item active" : "nav-item"
+            }
           >
             <span className="nav-icon">{item.icon}</span>
-            <span className="nav-text">{item.name}</span>
+            {/* ⚡ استفاده از item.label برای خواندن فیلد نام از آرایه ناوبری پروژه */}
+            <span className="nav-text">{item.label || item.name}</span>
           </NavLink>
         ))}
       </nav>

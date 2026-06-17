@@ -13,49 +13,72 @@ const CommitteeManagement = () => {
   const [realUsers, setRealUsers] = useState([]); // لیست کل کاربران سیستم برای مودال افزودن عضو
   const [selectedCommittee, setSelectedCommittee] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("All");
 
   const [showUserSelector, setShowUserSelector] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editFormData, setEditFormData] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // ⚡ ۱. متد گرفتن تمام کمیته‌ها از بک‌اِند (با ایمن‌سازی کامل و بیخی محکم)
-  const fetchCommittees = async () => {
+  // ⚡ متد کمکی برای نرمال‌سازی دیتای دریافتی از سرور جهت رندر بی‌نقص کامپوننت‌ها
+  const processCommitteeData = (data, allCommitteesList) => {
+    return data.map(c => {
+      const leadName = c.committeeAdmin 
+        ? `${c.committeeAdmin.firstName || ''} ${c.committeeAdmin.lastName || ''}`.trim()
+        : "تعیین نشده";
+
+      return {
+        ...c,
+        chair: leadName || "تعیین نشده", 
+        type: "Technical", 
+        subCategory: c.description || "توضیحات ندارد",
+        members: c.members || []
+      };
+    });
+  };
+
+  // ⚡ ۱. متد لود دیتای پیش‌فرض سیستم (لود اولیه تمام کمیته‌ها)
+  const fetchAllCommittees = async () => {
     try {
       const token = sessionStorage.getItem('token');
-      const response = await axios.get('http://localhost:8081/api/v1.0/admin/committees', {
+      const response = await axios.get('http://localhost:8081/api/v1.0/committees', {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.data && Array.isArray(response.data)) {
-        const processedData = response.data.map(c => {
-          // 🛡️ بررسی هوشمند و کاملاً امن برای نام ادمین کمیته جهت جلوگیری از ارور ۵۰۰ و کرش
-          const leadName = c.committeeAdmin 
-            ? `${c.committeeAdmin.firstName || ''} ${c.committeeAdmin.lastName || ''}`.trim()
-            : "تعیین نشده";
-
-          return {
-            ...c,
-            chair: leadName || "تعیین نشده", 
-            type: "Technical", 
-            subCategory: c.description || "توضیحات ندارد",
-            members: c.members || [] // تضمین وجود آرایه ممبرز برای جلوگیری از باگ‌های رندر
-          };
-        });
-
+        const processedData = processCommitteeData(response.data);
         setCommittees(processedData);
-
-        // 🔥 آپدیت فوری پنل سمت راست بدون از دست رفتن استیت
-        if (selectedCommittee) {
-          const currentUpdated = processedData.find(item => item.id === selectedCommittee.id);
-          if (currentUpdated) {
-            setSelectedCommittee(currentUpdated);
-          }
-        }
+        syncSelectedCommittee(processedData);
       }
     } catch (err) {
-      console.error("Error fetching committees:", err);
+      console.error("Error fetching all committees:", err);
+    }
+  };
+
+  // ⚡ متد فرعی جدید: متصل به اندپوینت سرچ بک‌اِند برای فیلترینگ لایو دیتابیس
+  const searchCommitteesFromBackend = async (keyword) => {
+    try {
+      const token = sessionStorage.getItem('token');
+      const response = await axios.get(`http://localhost:8081/api/v1.0/committees/search?keyword=${encodeURIComponent(keyword)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (response.data && Array.isArray(response.data)) {
+        const processedData = processCommitteeData(response.data);
+        setCommittees(processedData);
+        syncSelectedCommittee(processedData);
+      }
+    } catch (err) {
+      console.error("Error searching committees from backend:", err);
+    }
+  };
+
+  // همگام‌سازی استیت پنل جزئیات سمت راست با دیتای آپدیت شده
+  const syncSelectedCommittee = (latestData) => {
+    if (selectedCommittee) {
+      const currentUpdated = latestData.find(item => item.id === selectedCommittee.id);
+      if (currentUpdated) {
+        setSelectedCommittee(currentUpdated);
+      }
     }
   };
 
@@ -74,10 +97,24 @@ const CommitteeManagement = () => {
     }
   };
 
+  // لود اولیه دیتای کامپوننت
   useEffect(() => {
-    fetchCommittees();
+    fetchAllCommittees();
     fetchRealUsers();
   }, []);
+
+  // ⚡ مکانیزم Debounce حرفه‌ای برای متصل کردن سرچ باکس به ای‌پیا‌ی سرچ بک‌اِند
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      fetchAllCommittees(); // اگر سرچ باکس خالی بود تمام لیست برگردد
+    } else {
+      const delayDebounceFn = setTimeout(() => {
+        searchCommitteesFromBackend(searchTerm);
+      }, 300); // تاخیر ۳۰۰ میلی‌ثانیه برای بهینه‌سازی ترافیک سرور
+
+      return () => clearTimeout(delayDebounceFn);
+    }
+  }, [searchTerm]);
 
   // ⚡ ۳. متد ایجاد کمیته جدید
   const handleSaveNewCommittee = async (data) => {
@@ -97,25 +134,13 @@ const CommitteeManagement = () => {
       if (response.status === 200 || response.status === 201) {
         alert("Committee created successfully!");
         setIsCreateModalOpen(false); 
-        await fetchCommittees(); // بازخوانی فوری لست پس از ایجاد موفقیت‌آمیز
+        searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
       }
     } catch (err) {
       console.error("Error creating committee:", err);
       alert(err.response?.data || "Failed to create committee.");
     }
   };
-
-  // 🛡️ اصلاح اساسی فیلتر دیتای جدول: ایمن‌سازی کامل در برابر فیلدهای null ادمین
-  const filteredData = committees.filter(item => {
-    const chairName = item.chair ? item.chair : "Unassigned";
-    const committeeName = item.name || "";
-    
-    const matchesSearch = committeeName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          chairName.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = filterType === "All" || item.type === filterType;
-    return matchesSearch && matchesFilter;
-  });
 
   // ⚡ ۴. متد حذف کمیته
   const handleDeleteCommittee = async (committeeId) => {
@@ -127,13 +152,11 @@ const CommitteeManagement = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.status === 200) {
-          const updated = committees.filter(c => c.id !== committeeId);
-          setCommittees(updated);
           if (selectedCommittee && selectedCommittee.id === committeeId) {
             setSelectedCommittee(null);
           }
           alert("Committee deleted successfully.");
-          await fetchCommittees();
+          searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
         }
       } catch (err) {
         alert(err.response?.data || "Failed to delete committee.");
@@ -141,15 +164,37 @@ const CommitteeManagement = () => {
     }
   };
 
-  const handleUpdateImage = (base64Image) => {
-    const updated = committees.map(c => 
-      c.id === selectedCommittee.id ? { ...c, image: base64Image } : c
-    );
-    setCommittees(updated);
-    setSelectedCommittee({ ...selectedCommittee, image: base64Image });
+  // ⚡ ۵. متد آپدیت تصویر کمیته در دیتابیس
+  const handleUpdateImage = async (base64Image) => {
+    if (!selectedCommittee) return;
+    
+    try {
+      const token = sessionStorage.getItem('token');
+      const payload = {
+        name: selectedCommittee.name,
+        description: selectedCommittee.description,
+        selectedAdminId: selectedCommittee.committeeAdmin?.id || null,
+        image: base64Image 
+      };
+
+      const response = await axios.put(
+        `http://localhost:8081/api/v1.0/admin/committees/update/${selectedCommittee.id}`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === 200) {
+        setSelectedCommittee({ ...selectedCommittee, image: base64Image });
+        alert("Committee profile image updated successfully!");
+        searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
+      }
+    } catch (err) {
+      console.error("Error updating committee image:", err);
+      alert(err.response?.data || "Failed to update profile image.");
+    }
   };
 
-  // ⚡ ۵. متد حذف واقعی ممبر از کمیته (بک‌اِند)
+  // ⚡ ۶. متد حذف عضو از کمیته (بک‌اِند)
   const handleRemoveMember = async (committeeId, memberId) => {
     const confirmDelete = window.confirm("Are you sure you want to remove this member?");
     if (confirmDelete) {
@@ -162,7 +207,7 @@ const CommitteeManagement = () => {
 
         if (response.status === 200) {
           alert("Member removed successfully.");
-          await fetchCommittees(); // لود مجدد برای همگام‌سازی
+          searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
         }
       } catch (err) {
         console.error(err);
@@ -171,14 +216,12 @@ const CommitteeManagement = () => {
     }
   };
 
-  // ⚡ ۶. متد افزودن ممبر
+  // ⚡ ۷. متد افزودن عضو به کمیته
   const handleAddMemberAction = async (user) => {
     if (!selectedCommittee) return;
 
     try {
       const token = sessionStorage.getItem('token');
-
-      // چک کردن اینکه کاربر از قبل عضو نباشد
       const isAlreadyMember = selectedCommittee.members?.some(m => Number(m.id) === Number(user.id));
       if (isAlreadyMember) {
         alert(`${user.firstName} ${user.lastName} is already a member.`);
@@ -191,7 +234,7 @@ const CommitteeManagement = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      await fetchCommittees(); 
+      searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
       alert("Member added successfully!");
     } catch (err) {
       console.error(err);
@@ -201,23 +244,28 @@ const CommitteeManagement = () => {
     }
   };
 
-  // ⚡ ۷. متد جامع آپدیت اطلاعات کمیته
+  // ⚡ ۸. متد ادیت مشخصات و ادمین کمیته
   const handleSaveEdit = async (e) => {
     e.preventDefault();
     try {
       const token = sessionStorage.getItem('token');
+      const payload = {
+        name: editFormData.name ? editFormData.name.trim() : "",
+        description: editFormData.description || "",
+        selectedAdminId: editFormData.selectedAdminId || null 
+      };
 
-      if (editFormData.selectedAdminId) {
-        await axios.put(
-          `http://localhost:8081/api/v1.0/admin/assign-committee-admin/${editFormData.id}/${editFormData.selectedAdminId}?add=true`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+      const response = await axios.put(
+        `http://localhost:8081/api/v1.0/admin/committees/update/${editFormData.id}`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+
+      if (response.status === 200) {
+        alert("Committee changes applied successfully!");
+        setShowEditModal(false);
+        searchTerm === "" ? await fetchAllCommittees() : await searchCommitteesFromBackend(searchTerm);
       }
-
-      alert("Committee changes applied successfully!");
-      setShowEditModal(false);
-      await fetchCommittees(); 
     } catch (err) {
       console.error("Error during save edit:", err);
       alert(err.response?.data || "Failed to update committee layout.");
@@ -237,7 +285,7 @@ const CommitteeManagement = () => {
         <header className="cm-header-compact">
           <div className="header-info">
             <h1>Committees Inventory</h1>
-            <p>{filteredData.length} committees matching your criteria</p>
+            <p>{committees.length} committees loaded in view</p>
           </div>
           <button className="create-btn" onClick={() => setIsCreateModalOpen(true)}>+ New Committee</button>
         </header>
@@ -245,10 +293,9 @@ const CommitteeManagement = () => {
         <div className="cm-main-layout">
           <div className="cm-table-wrapper">
             <CommitteeTable 
-              data={filteredData} 
+              data={committees} 
               onSelectCommittee={setSelectedCommittee}
               setSearchTerm={setSearchTerm}
-              setFilterType={setFilterType}
               onDeleteCommittee={handleDeleteCommittee}
             />
           </div>
@@ -348,7 +395,7 @@ const CommitteeManagement = () => {
                       {member.name ? member.name : `${member.firstName || ''} ${member.lastName || ''}`}
                     </option>
                   ))}
-                </                select>
+                </select>
                 {(!editFormData?.members || editFormData.members.length === 0) && (
                   <span style={{ color: '#ffbb33', fontSize: '11px', display: 'block', marginTop: '5px' }}>
                     * این کمیته هیچ عضوی ندارد! ابتدا باید از پنل اصلی عضو اضافه کنید تا بتوانید او را ادمین بسازید.
